@@ -28,3 +28,35 @@ Objects
 Functions
 
 JSX (components)
+
+
+
+🖐️Prop destructuring
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+🖐️Prop Children
+In React, you can send the content between the opening and closing tags of a component, to another component.
+eg:
+ <Childrenchild>
+<h1> this is Front end developement courses </h1>
+<h1>this is  react js courses complete  </h1>
+</Childrenchild>
+
+This can be accessed in the other component using the props.children property.
+  <h1>{props.children}</h1>
+
+From the Parent component, send the content between the opening and closing tags of the Son and Daughter components:
