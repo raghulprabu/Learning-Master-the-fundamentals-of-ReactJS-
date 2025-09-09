@@ -1,12 +1,14 @@
-// import Firstreact from "./First-React/react.jsx"
-// import Child from "./Props/syntax+doc/child "
-import Parentchild from "./Props/syntax+doc/PropChildren/parentchild";
+ import Firstreact from "./First-React/react.jsx"
+ import JSX from "./JSX/Jsxapp.jsx"
+
+ import Component from "./Componenets/CompApp.jsx"
 function App() {
   return (
     <div>
-        {/* <Firstreact/> */}
-        {/* <Child/> */}
-        <Parentchild/>
+        <Firstreact/> 
+        <JSX/>
+        <Component/>
+  
     </div>
   );
 }
