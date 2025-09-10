@@ -117,7 +117,7 @@ const Home = () => {
             <div className="version">v18.0</div>
           </div>
           
-          {/* <nav className="main-nav">
+          <nav className="main-nav">
             <button 
               className={`nav-item ${activeSection === 'home' ? 'active' : ''}`}
               onClick={() => setActiveSection('home')}
@@ -134,7 +134,7 @@ const Home = () => {
                 {item.title}
               </button>
             ))}
-          </nav> */}
+          </nav>
 
           <div className="header-actions">
             <button className="action-btn search-btn">
