@@ -29,7 +29,8 @@ body {
   background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
   color: white;
   margin-bottom: 40px;
-  border-radius: 0 0 20px 20px;
+  border-radius: 16px;
+
 }
 
 .main-title {

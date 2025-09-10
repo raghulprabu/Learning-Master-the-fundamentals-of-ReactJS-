@@ -29,7 +29,7 @@ body {
   background: linear-gradient(135deg, #61dafb 0%, #21759b 100%);
   color: white;
   margin-bottom: 40px;
-  border-radius: 0 0 20px 20px;
+  border-radius: 16px;
 }
 
 .main-title {
