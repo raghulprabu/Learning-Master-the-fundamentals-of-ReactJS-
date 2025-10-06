@@ -93,14 +93,14 @@ const Home = () => {
     },
     {
       id:'useRef',
-      tittle:'useRef',
+      title:'useRef',
       description: 'Modern React features',
       icon: '🔃',
       component: <Hooks />
     },
     {
       id:'useMemo',
-      tittle:'useMemo',
+      title:'useMemo',
       description: 'Modern React features',
       icon: '💭',
       component: <Hooks />
