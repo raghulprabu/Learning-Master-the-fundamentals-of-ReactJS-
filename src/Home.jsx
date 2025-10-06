@@ -54,6 +54,56 @@ const Home = () => {
       description: 'Modern React features',
       icon: '🪝',
       component: <Hooks />
+    },
+    {
+      id: 'UseState',
+      title: 'UseState',
+      description: 'Modern React features',
+      icon: '🛰️',
+      component: <Hooks />
+
+    },
+    {
+      id: 'UseEffect',
+      title: 'UseEffect',
+      description: 'Modern React features',
+      icon: '🧗‍♂️',
+      component: <Hooks />
+    },
+    {
+      id: 'UseCallBack',
+      title: 'UseCallBack',
+      description: 'Modern React features',
+      icon: '📲',
+      component: <Hooks />
+    },
+    {
+      id: 'useContext',
+      title: 'useContext',
+      description: 'Modern React features',
+      icon: '☎️',
+      component: <Hooks />
+    },
+    {
+      id: 'useReducer',
+      title: 'useReducer',
+      description: 'Modern React features',
+      icon: '🔇',
+      component: <Hooks />
+    },
+    {
+      id:'useRef',
+      tittle:'useRef',
+      description: 'Modern React features',
+      icon: '🔃',
+      component: <Hooks />
+    },
+    {
+      id:'useMemo',
+      tittle:'useMemo',
+      description: 'Modern React features',
+      icon: '💭',
+      component: <Hooks />
     }
   ];
 
@@ -103,7 +153,7 @@ const Home = () => {
             >
             <div className="logo-section">
             <div className="logo">React Docs</div>
-            <div className="version">v18.0</div>
+            <div className="version">v19.0</div>
           </div>
             </div>
           </nav>

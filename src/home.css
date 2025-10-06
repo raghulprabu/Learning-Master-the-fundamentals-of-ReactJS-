@@ -3,7 +3,7 @@
   --primary-bg: #1e1f22;
   --secondary-bg: #2b2d31;
   --card-bg: #313438;
-  --hover-bg: #3c4043;
+  --hover-bg: #9ed1f7;
   --text-primary: #ffffff;
   --text-secondary: #a8a8a8;
   --text-muted: #6f7176;
@@ -263,34 +263,6 @@ body {
   opacity: 1;
   transform: translateX(0);
 }
-
-/* Stats Section */
-/* .stats-section {
-  display: flex;
-  justify-content: center;
-  gap: 4rem;
-  margin-top: 4rem;
-  padding: 2rem 0;
-  border-top: 1px solid var(--border-color);
-}
-
-.stat-item {
-  text-align: center;
-}
-
-.stat-number {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: var(--accent-blue);
-  margin-bottom: 0.5rem;
-}
-
-.stat-label {
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-} */
 
 /* Footer */
 .app-footer {
