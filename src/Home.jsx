@@ -84,20 +84,6 @@ const Home = () => {
               ))}
             </div>
 
-            {/* <div className="stats-section">
-              <div className="stat-item">
-                <div className="stat-number">6</div>
-                <div className="stat-label">Core Topics</div>
-              </div>
-              <div className="stat-item">
-                <div className="stat-number">50+</div>
-                <div className="stat-label">Examples</div>
-              </div>
-              <div className="stat-item">
-                <div className="stat-number">100%</div>
-                <div className="stat-label">Hands-on</div>
-              </div>
-            </div> */}
           </div>
         </div>
       );
@@ -109,50 +95,23 @@ const Home = () => {
 
   return (
     <div className="app-container">
-      {/* Header */}
       <header className="app-header">
         <div className="header-content">
-          <div className="logo-section">
+          <nav className="main-nav">
+            <div
+              onClick={() => setActiveSection('home')}
+            >
+            <div className="logo-section">
             <div className="logo">React Docs</div>
             <div className="version">v18.0</div>
           </div>
-          
-          <nav className="main-nav">
-            <button 
-              className={`nav-item ${activeSection === 'home' ? 'active' : ''}`}
-              onClick={() => setActiveSection('home')}
-            >
-              Home
-            </button>
-            {navigationItems.map((item) => (
-              <button
-                key={item.id}
-                className={`nav-item ${activeSection === item.id ? 'active' : ''}`}
-                onClick={() => setActiveSection(item.id)}
-              >
-                <span className="nav-icon">{item.icon}</span>
-                {item.title}
-              </button>
-            ))}
+            </div>
           </nav>
-
-          <div className="header-actions">
-            <button className="action-btn search-btn">
-              <span>🔍</span>
-            </button>
-            <button className="action-btn theme-btn">
-              <span>🌙</span>
-            </button>
-          </div>
         </div>
       </header>
-
-      {/* Main Content */}
       <main className="main-content">
         {renderContent()}
       </main>
-
-      {/* Footer */}
       <footer className="app-footer">
         <div className="footer-content">
           <p>&copy; 2024 React Documentation. Built with React and modern web technologies.</p>
