@@ -60,7 +60,7 @@ const Home = () => {
       title: 'UseState',
       description: 'Modern React features',
       icon: '🛰️',
-      component: <Hooks />
+      // component: <Hooks />
 
     },
     {
@@ -68,42 +68,42 @@ const Home = () => {
       title: 'UseEffect',
       description: 'Modern React features',
       icon: '🧗‍♂️',
-      component: <Hooks />
+      // component: <Hooks />
     },
     {
       id: 'UseCallBack',
       title: 'UseCallBack',
       description: 'Modern React features',
       icon: '📲',
-      component: <Hooks />
+      // component: <Hooks />
     },
     {
       id: 'useContext',
       title: 'useContext',
       description: 'Modern React features',
       icon: '☎️',
-      component: <Hooks />
+      // component: <Hooks />
     },
     {
       id: 'useReducer',
       title: 'useReducer',
       description: 'Modern React features',
       icon: '🔇',
-      component: <Hooks />
+      // component: <Hooks />
     },
     {
       id:'useRef',
       title:'useRef',
       description: 'Modern React features',
       icon: '🔃',
-      component: <Hooks />
+      // component: <Hooks />
     },
     {
       id:'useMemo',
       title:'useMemo',
       description: 'Modern React features',
       icon: '💭',
-      component: <Hooks />
+      // component: <Hooks />
     }
   ];
 
@@ -113,10 +113,10 @@ const Home = () => {
         <div className="hero-section">
           <div className="hero-content">
             <h1 className="hero-title">
-              Master React Development
+              Master Front-End Development
             </h1>
             <p className="hero-subtitle">
-              Complete guide to modern React development with hands-on examples and real-world patterns
+              Complete guide to modern Front-End  development with hands-on examples and real-world patterns
             </p>
             
             <div className="feature-grid">
@@ -147,15 +147,35 @@ const Home = () => {
     <div className="app-container">
       <header className="app-header">
         <div className="header-content">
+           <div className="logo-section">
+            <div className="logo"> Front- End  Docs</div>
+          </div>
           <nav className="main-nav">
-            <div
+            <button 
+              className={`nav-item ${activeSection === 'home' ? 'active' : ''}`}
               onClick={() => setActiveSection('home')}
             >
-            <div className="logo-section">
-            <div className="logo">React Docs</div>
-            <div className="version">v19.0</div>
-          </div>
-            </div>
+              React Js Libarary
+          <div className="version">version is 19.1.1</div>
+            </button>
+
+            <button 
+              className={`nav-item ${activeSection === 'home' ? 'active' : ''}`}
+              // onClick={() => setActiveSection('home')}
+            >
+              JavaScript 
+          <div className="version">Es6  Version</div>
+            </button>
+
+            <button 
+              className={`nav-item ${activeSection === 'home' ? 'active' : ''}`}
+              // onClick={() => setActiveSection('home')}
+            >
+              Next js FrameWork
+          <div className="version">version is 15.5.4</div>
+            </button>
+
+
           </nav>
         </div>
       </header>
