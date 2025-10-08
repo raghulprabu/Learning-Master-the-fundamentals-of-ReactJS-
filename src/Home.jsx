@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './home.css';
 
 // Import your actual components
@@ -9,8 +9,21 @@ import Props from "./Props/propsapp.jsx";
 import Hoc from "./Hoc/Hocapp.jsx";
 import Hooks from "./Hooks/hook.jsx";
 
+// Key for localStorage
+const STORAGE_KEY = 'activeSectionId';
+
 const Home = () => {
-  const [activeSection, setActiveSection] = useState('home');
+  // 1. Initialize state: Read from localStorage or default to 'home'
+  const [activeSection, setActiveSection] = useState(() => {
+    // This function runs only on the initial render
+    const savedSection = localStorage.getItem(STORAGE_KEY);
+    return savedSection || 'home';
+  });
+
+  // 2. Use useEffect to save the state whenever it changes
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, activeSection);
+  }, [activeSection]); // Dependency array: run this effect only when activeSection changes
 
   const navigationItems = [
     {
@@ -58,50 +71,49 @@ const Home = () => {
     {
       id: 'UseState',
       title: 'UseState',
-      description: 'Modern React features',
+      description: 'Store dynamic data',
       icon: '🛰️',
       // component: <Hooks />
-
     },
     {
       id: 'UseEffect',
       title: 'UseEffect',
-      description: 'Modern React features',
+      description: 'Run side effects.',
       icon: '🧗‍♂️',
       // component: <Hooks />
     },
     {
       id: 'UseCallBack',
       title: 'UseCallBack',
-      description: 'Modern React features',
+      description: 'Remembers a Function',
       icon: '📲',
       // component: <Hooks />
     },
     {
       id: 'useContext',
       title: 'useContext',
-      description: 'Modern React features',
+      description: 'Share global data without prop drilling.',
       icon: '☎️',
       // component: <Hooks />
     },
     {
       id: 'useReducer',
       title: 'useReducer',
-      description: 'Modern React features',
+      description: 'Manage complex state with actions.',
       icon: '🔇',
       // component: <Hooks />
     },
     {
       id:'useRef',
       title:'useRef',
-      description: 'Modern React features',
+      description: 'Reference to DOM / store values across renders.',
       icon: '🔃',
       // component: <Hooks />
     },
     {
       id:'useMemo',
       title:'useMemo',
-      description: 'Modern React features',
+      description: 'Remembers a Value (Result of Calculation)',
       icon: '💭',
       // component: <Hooks />
     }
@@ -152,7 +164,7 @@ const Home = () => {
           </div>
           <nav className="main-nav">
             <button 
-              className={`nav-item ${activeSection === 'home' ? 'active' : ''}`}
+              className={`nav-item ${activeSection === 'home' || activeSection === 'react' || activeSection === 'jsx' || activeSection === 'Component' || activeSection === 'props' || activeSection === 'hoc' || activeSection === 'hooks' || activeSection === 'UseState' || activeSection === 'UseEffect' || activeSection === 'UseCallBack' || activeSection === 'useContext' || activeSection === 'useReducer' || activeSection === 'useRef' || activeSection === 'useMemo' ? 'active' : ''}`}
               onClick={() => setActiveSection('home')}
             >
               React Js Libarary
@@ -160,7 +172,7 @@ const Home = () => {
             </button>
 
             <button 
-              className={`nav-item ${activeSection === 'home' ? 'active' : ''}`}
+              className={`nav-item`}
               // onClick={() => setActiveSection('home')}
             >
               JavaScript 
@@ -168,7 +180,7 @@ const Home = () => {
             </button>
 
             <button 
-              className={`nav-item ${activeSection === 'home' ? 'active' : ''}`}
+              className={`nav-item`}
               // onClick={() => setActiveSection('home')}
             >
               Next js FrameWork
