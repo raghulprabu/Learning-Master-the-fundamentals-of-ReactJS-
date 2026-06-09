@@ -1,0 +1,192 @@
+/* ===========================================================
+   ConceptPage – shared visual language for every learning topic
+   Each page picks a "theme" (color accent) via a className.
+   =========================================================== */
+
+.concept-page {
+  --accent: #10b981;
+  --accent-dark: #059669;
+  --accent-soft: #f0fdf4;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px 64px;
+}
+
+.concept-page.theme-emerald { --accent:#10b981; --accent-dark:#059669; --accent-soft:#f0fdf4; }
+.concept-page.theme-blue    { --accent:#3b82f6; --accent-dark:#2563eb; --accent-soft:#eff6ff; }
+.concept-page.theme-purple  { --accent:#8b5cf6; --accent-dark:#7c3aed; --accent-soft:#f5f3ff; }
+.concept-page.theme-orange  { --accent:#f97316; --accent-dark:#ea580c; --accent-soft:#fff7ed; }
+.concept-page.theme-pink    { --accent:#ec4899; --accent-dark:#db2777; --accent-soft:#fdf2f8; }
+.concept-page.theme-indigo  { --accent:#6366f1; --accent-dark:#4f46e5; --accent-soft:#eef2ff; }
+.concept-page.theme-teal    { --accent:#14b8a6; --accent-dark:#0d9488; --accent-soft:#f0fdfa; }
+.concept-page.theme-rose    { --accent:#f43f5e; --accent-dark:#e11d48; --accent-soft:#fff1f2; }
+.concept-page.theme-cyan    { --accent:#06b6d4; --accent-dark:#0891b2; --accent-soft:#ecfeff; }
+.concept-page.theme-amber   { --accent:#f59e0b; --accent-dark:#d97706; --accent-soft:#fffbeb; }
+.concept-page.theme-violet  { --accent:#a855f7; --accent-dark:#9333ea; --accent-soft:#faf5ff; }
+.concept-page.theme-sky     { --accent:#0ea5e9; --accent-dark:#0284c7; --accent-soft:#f0f9ff; }
+
+/* ---------- Header ---------- */
+.concept-header {
+  text-align: center;
+  padding: 64px 24px 48px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+  color: #fff;
+  margin-bottom: 36px;
+  border-radius: 16px;
+}
+.concept-header .concept-icon { font-size: 3rem; margin-bottom: 10px; }
+.concept-header h1 {
+  font-size: 2.6rem; font-weight: 700; letter-spacing: -1px; margin: 0 0 12px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,.12);
+}
+.concept-header p { font-size: 1.1rem; opacity: .92; max-width: 760px; margin: 0 auto; line-height: 1.6; }
+.concept-header .concept-meta {
+  display: inline-block; margin-top: 16px; padding: 6px 16px; border-radius: 999px;
+  background: rgba(255,255,255,.18); font-size: .85rem; letter-spacing: .5px; text-transform: uppercase;
+}
+
+/* ---------- Sections / Cards ---------- */
+.concept-content { display: flex; flex-direction: column; gap: 32px; }
+
+.concept-card {
+  background: #fff; border-radius: 12px; padding: 28px 32px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.05); border: 1px solid #e5e9ee;
+}
+.concept-card h2 {
+  font-size: 1.6rem; font-weight: 700; margin: 0 0 18px; color: #1a202c;
+  border-bottom: 2px solid var(--accent); padding-bottom: 10px;
+  display: flex; align-items: center; gap: 10px;
+}
+.concept-card h3 { font-size: 1.2rem; font-weight: 600; color: #2d3748; margin: 22px 0 12px; }
+.concept-card p { color: #374151; line-height: 1.7; margin-bottom: 12px; }
+.concept-card p:last-child { margin-bottom: 0; }
+
+.concept-points { list-style: none; padding: 0; margin: 12px 0; display: flex; flex-direction: column; gap: 10px; }
+.concept-points li {
+  display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px;
+  background: var(--accent-soft); border-left: 4px solid var(--accent); border-radius: 8px;
+  color: #374151; font-size: .98rem; line-height: 1.6;
+}
+.concept-points li::before { content: "👉"; flex-shrink: 0; }
+
+.concept-callout {
+  background: #eef2ff; border-left: 4px solid #6366f1; border-radius: 8px;
+  padding: 16px 18px; margin: 16px 0; color: #3730a3; font-weight: 500;
+}
+
+/* ---------- Code blocks ---------- */
+.code-block-wrap { margin: 14px 0; border-radius: 12px; overflow: hidden; border: 1px solid #2d3748; }
+.code-block-title {
+  background: #2d3748; color: #cbd5e1; font-size: .8rem; font-weight: 600;
+  padding: 8px 16px; letter-spacing: .4px;
+}
+.code-block-wrap.tone-good .code-block-title { background: #065f46; color: #d1fae5; }
+.code-block-wrap.tone-bad  .code-block-title { background: #7f1d1d; color: #fee2e2; }
+.code-block {
+  background: #1a202c; margin: 0; padding: 20px; overflow-x: auto;
+}
+.code-block code {
+  color: #e2e8f0; font-family: 'Monaco','Menlo','Ubuntu Mono',monospace;
+  font-size: 13.5px; line-height: 1.65; white-space: pre;
+}
+
+/* ---------- Analogy box ---------- */
+.analogy-box {
+  display: flex; gap: 16px; margin-top: 20px; padding: 20px; border-radius: 12px;
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-left: 4px solid #f59e0b;
+}
+.analogy-box .analogy-icon { font-size: 2rem; flex-shrink: 0; }
+.analogy-box h4 { color: #92400e; font-size: 1.05rem; margin: 0 0 6px; }
+.analogy-box p { color: #a16207; font-style: italic; margin: 0; }
+
+/* ---------- Flow diagram ---------- */
+.flow-diagram { margin-top: 18px; }
+.flow-diagram-title { font-weight: 600; color: #374151; margin-bottom: 14px; }
+.flow-steps { display: flex; align-items: stretch; gap: 10px; flex-wrap: wrap; }
+.flow-step {
+  flex: 1; min-width: 130px; background: var(--accent-soft); border: 2px solid var(--accent);
+  border-radius: 12px; padding: 16px 12px; text-align: center; display: flex; flex-direction: column; gap: 6px;
+}
+.flow-step-icon { font-size: 1.6rem; }
+.flow-step-label { font-weight: 700; color: #1f2937; font-size: .95rem; }
+.flow-step-note { font-size: .8rem; color: #6b7280; line-height: 1.4; }
+.flow-arrow { display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: var(--accent-dark); font-weight: 700; }
+
+/* ---------- Pros & Cons ---------- */
+.pros-cons-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 16px; }
+.pc-col { padding: 18px 20px; border-radius: 12px; border: 2px solid transparent; }
+.pc-col h4 { margin: 0 0 12px; font-size: 1.05rem; }
+.pc-col ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; color: #374151; line-height: 1.5; }
+.pc-pros { background: #f0fdf4; border-color: #86efac; }
+.pc-pros h4 { color: #15803d; }
+.pc-cons { background: #fef2f2; border-color: #fca5a5; }
+.pc-cons h4 { color: #b91c1c; }
+
+/* ---------- Mistakes ---------- */
+.mistakes-list { display: flex; flex-direction: column; gap: 22px; margin-top: 16px; }
+.mistake-card { padding: 20px; border-radius: 12px; background: #f8fafc; border: 2px solid #e2e8f0; }
+.mistake-card h4 { margin: 0 0 12px; color: #b91c1c; font-size: 1.05rem; }
+.mistake-note { color: #4b5563; font-size: .92rem; margin-top: 8px; }
+.mistake-codes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+/* ---------- Comparison grid ---------- */
+.comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 16px; }
+.comparison-col { padding: 18px; border-radius: 12px; border: 2px solid transparent; }
+.comparison-col h4 { margin: 0 0 12px; font-size: 1.02rem; }
+.comparison-col.tone-good { background: #f0fdf4; border-color: #86efac; }
+.comparison-col.tone-good h4 { color: #15803d; }
+.comparison-col.tone-bad { background: #fef2f2; border-color: #fca5a5; }
+.comparison-col.tone-bad h4 { color: #b91c1c; }
+.comparison-col.tone-neutral { background: #f8fafc; border-color: #e2e8f0; }
+.comparison-note { font-size: .88rem; color: #6b7280; font-style: italic; margin-top: 8px; }
+
+/* ---------- Real world examples ---------- */
+.real-world-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 20px; margin-top: 16px; }
+.real-world-card {
+  padding: 20px; border-radius: 12px; background: #f8fafc; border: 2px solid #e2e8f0; transition: all .25s ease;
+}
+.real-world-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0,0,0,.08); }
+.real-world-card .rw-icon { font-size: 1.8rem; margin-bottom: 8px; }
+.real-world-card h4 { margin: 0 0 8px; color: #1f2937; font-size: 1.05rem; }
+.real-world-card p { color: #4b5563; font-size: .92rem; margin-bottom: 10px; }
+
+/* ---------- Best practices ---------- */
+.best-practices { list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.best-practices li {
+  display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; border-radius: 8px;
+  background: var(--accent-soft); border-left: 4px solid var(--accent); color: #374151; line-height: 1.6;
+}
+.bp-check { flex-shrink: 0; font-size: 1.05rem; }
+
+/* ---------- Interview Q&A (accordion via <details>) ---------- */
+.interview-qa { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
+.qa-item { border: 2px solid #e2e8f0; border-radius: 10px; padding: 4px 18px; background: #f8fafc; }
+.qa-item[open] { border-color: var(--accent); background: var(--accent-soft); }
+.qa-item summary {
+  cursor: pointer; padding: 14px 0; font-weight: 600; color: #1f2937; list-style: none; display: flex; gap: 10px;
+}
+.qa-item summary::-webkit-details-marker { display: none; }
+.qa-item summary::before { content: "Q."; color: var(--accent-dark); font-weight: 800; }
+.qa-item p { padding: 0 0 16px 26px; color: #4b5563; margin: 0; line-height: 1.65; }
+
+/* ---------- Further reading ---------- */
+.further-reading { margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+.further-reading li { color: #4b5563; font-size: .92rem; }
+.further-reading strong { color: #1f2937; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 860px) {
+  .pros-cons-grid, .comparison-grid, .mistake-codes { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+  .concept-page { padding: 0 16px 48px; }
+  .concept-header { padding: 44px 18px 36px; }
+  .concept-header h1 { font-size: 1.9rem; }
+  .concept-header p { font-size: 1rem; }
+  .concept-card { padding: 20px; }
+  .concept-card h2 { font-size: 1.3rem; }
+  .flow-steps { flex-direction: column; }
+  .flow-arrow { transform: rotate(90deg); }
+  .code-block code { font-size: 12px; }
+}
