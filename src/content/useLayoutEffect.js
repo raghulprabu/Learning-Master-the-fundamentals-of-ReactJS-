@@ -3,18 +3,18 @@ const useLayoutEffectContent = {
   title: 'useLayoutEffect Hook',
   icon: '📐',
   theme: 'amber',
-  tagline: 'Like useEffect, but fires synchronously after DOM mutations and before the browser paints — for measuring & adjusting layout.',
+  tagline: 'useLayoutEffect runs before the browser paints — use it to measure and adjust the DOM without a visible flicker.',
   meta: 'Hooks · Advanced',
 
   whatIsIt: {
     description: [
-      'useLayoutEffect has the exact same signature as useEffect — useLayoutEffect(setup, dependencies) — but differs in WHEN it runs: synchronously, immediately after React has updated the DOM, but BEFORE the browser paints those changes to the screen.',
-      'This timing makes it the right tool for reading layout from the DOM (measurements, positions, sizes) and synchronously making adjustments — before the user ever sees an intermediate, "wrong" frame.'
+      'useLayoutEffect works just like useEffect, but it runs synchronously after React updates the DOM and BEFORE the browser shows it on screen.',
+      'Use it when you need to measure an element and then adjust something — so the user never sees the wrong position for even one frame.'
     ],
     points: [
-      'Syntax is identical to useEffect: useLayoutEffect(() => { /* ... */ return () => { /* cleanup */ }; }, [deps]);',
-      'Runs synchronously and BLOCKS the browser from painting until it finishes — unlike useEffect, which runs asynchronously after paint.',
-      'Use it specifically when your effect needs to measure something in the DOM and then synchronously change the DOM/state in response, before the user sees anything.'
+      'Syntax is the same as useEffect: useLayoutEffect(() => { /* ... */ return cleanup; }, [deps]);',
+      'Runs BEFORE the browser paints — blocks the paint until it finishes.',
+      'Use it only when useEffect causes a visible flicker in measure-then-adjust logic.'
     ],
     code: { title: 'The defining difference: timing relative to paint', snippet: `useEffect(() => {
   // Runs AFTER the browser paints — user may briefly see the "before" state
@@ -29,37 +29,37 @@ useLayoutEffect(() => {
     analogy: {
       icon: '🖌️',
       title: 'Real-World Analogy',
-      text: '"Imagine a painter about to unveil a portrait to a client. useEffect is like unveiling the painting immediately, then occasionally stepping back up afterward to touch up a stray brushstroke — the client may catch a glimpse of the \'before\' look. useLayoutEffect is the painter finishing every last touch-up BEHIND the curtain, and only pulling it back once the piece is truly final — the client only ever sees the finished result, with no flicker of the in-between state."'
+      text: '"Think of a painter finishing a portrait. useEffect is like showing the painting immediately and then touching up stray brushstrokes in front of the client — they can see the unfinished state. useLayoutEffect is finishing every touch-up BEHIND the curtain before revealing the finished piece."'
     }
   },
 
   whyUsed: {
-    description: 'Most effects (data fetching, subscriptions, logging) don\'t care about pixel-perfect timing relative to paint — useEffect\'s "after paint" timing is ideal because it doesn\'t block the browser from showing something to the user quickly. But a specific category of work — measuring an element\'s size/position and then synchronously adjusting layout based on it — would cause a visible flicker if done after paint. useLayoutEffect exists precisely to prevent that flicker.',
+    description: 'When you measure a DOM element and then change its position based on that measurement, useEffect can cause a flicker — the user briefly sees the wrong position. useLayoutEffect fixes this by doing the measure-and-adjust before the browser paints.',
     points: [
-      'Prevents visible flicker/flash when an effect must measure the DOM and then immediately adjust layout or state in response.',
-      'Guarantees your DOM reads happen against the freshly-committed DOM, and your DOM writes happen before the user sees anything.',
-      'Essential for certain animation and positioning libraries that need to calculate-then-apply transforms in a single visual frame.',
-      'Matches the timing of browser APIs like getBoundingClientRect() that need to read post-mutation, pre-paint layout.'
+      'Prevents visible flicker when measuring and then adjusting layout.',
+      'Runs against the freshly committed DOM — reads and writes happen in the same frame.',
+      'Needed for tooltips, popovers, and scroll-position corrections.',
+      'Matches the timing of browser APIs like getBoundingClientRect().'
     ]
   },
 
   whenToUse: {
-    description: 'useLayoutEffect is a narrow, specialized tool — reach for it only when you can answer "yes" to: does this effect need to measure the DOM and then synchronously change something before the user sees it?',
+    description: 'Use useLayoutEffect only when you can answer YES to: "does this effect need to measure the DOM and then change something before the user sees it?"',
     points: [
-      'Measuring an element\'s size/position (getBoundingClientRect, offsetHeight) immediately after it renders, then using that measurement to position another element (tooltips, popovers, dropdowns).',
-      'Preventing a visible "jump" or "flash" — e.g. adjusting scroll position to keep content stable when new items are prepended to a list.',
-      'Synchronizing imperative, layout-affecting third-party libraries (certain charting/animation tools) that must run before paint.',
-      'Implementing custom layout/measurement-driven behaviors where any visible flicker would look broken.'
+      'Measuring element size/position then repositioning another element (tooltips, dropdowns).',
+      'Correcting scroll position when new items are added above the visible area.',
+      'Syncing with animation libraries that must measure before they apply transforms.',
+      'Any case where you have observed a real flicker with useEffect.'
     ],
     analogy: {
       icon: '⚠️',
       title: 'The default should still be useEffect',
-      text: '"Reach for useLayoutEffect only when you HAVE a flicker problem caused by measure-then-adjust logic — not preemptively. Because it runs synchronously and blocks painting, overusing it can make your app feel slower and less responsive than useEffect would. The official guidance is blunt: \'useLayoutEffect can hurt performance — prefer useEffect when possible.\'"'
+      text: '"Use useLayoutEffect only when you HAVE a flicker problem. It blocks the browser from painting, so overusing it makes your app feel slower. The React team says clearly: prefer useEffect when possible."'
     }
   },
 
   howItWorks: {
-    description: 'After React commits changes to the DOM, but before the browser paints them on screen, React runs all useLayoutEffect callbacks (and their cleanups from the previous render) synchronously, in order — and waits for them to finish before allowing the browser to paint. useEffect callbacks, by contrast, are scheduled to run asynchronously after the paint has already happened.',
+    description: 'After React commits DOM changes but before the browser paints, React runs all useLayoutEffect callbacks synchronously. The browser waits for them to finish. useEffect runs later, after the paint.',
     code: {
       title: 'Positioning a tooltip without a visible flicker',
       snippet: `function Tooltip({ targetRef, children }) {
@@ -83,9 +83,9 @@ useLayoutEffect(() => {
 }`
     },
     points: [
-      'Both Hooks share the exact same cleanup-function mechanics — return a function from the callback to clean up before the next run / on unmount.',
-      'useLayoutEffect runs on both the client AND during server-rendering warnings — React will warn if you use it in an SSR context without a client-only guard, since there\'s no DOM to measure on the server.',
-      'If you genuinely don\'t need to read layout from the DOM, useEffect achieves the same result without blocking the paint — always start there.'
+      'Both hooks share the same cleanup mechanics — return a cleanup function just like useEffect.',
+      'useLayoutEffect triggers a React warning in server-side rendering — there is no DOM to measure on the server.',
+      'If you do not need to read layout from the DOM, useEffect is always the better choice.'
     ]
   },
 
@@ -100,41 +100,40 @@ useLayoutEffect(() => {
   },
 
   realWorldExamples: {
-    intro: 'useLayoutEffect earns its keep specifically in measure-then-adjust scenarios:',
+    intro: 'useLayoutEffect earns its keep in measure-then-adjust scenarios:',
     items: [
-      { icon: '💬', title: 'Tooltips, popovers, and dropdown positioning', description: 'Measuring a trigger element\'s position and the popover\'s own size, then placing it precisely — without a single frame of it appearing in the wrong spot first.' },
-      { icon: '📜', title: 'Maintaining scroll position when content is prepended', description: 'Chat apps that load older messages above the current view measure the new content\'s height and adjust scrollTop synchronously — so the visible messages don\'t visually "jump".' },
-      { icon: '📏', title: 'Auto-resizing text areas / dynamic layout containers', description: 'Measuring text content height and synchronously adjusting a container\'s size to fit — avoiding a visible resize "pop" after the fact.' },
-      { icon: '🎬', title: 'Coordinating with animation/transition libraries', description: 'Certain imperative animation libraries need accurate "before" measurements taken synchronously, right before they calculate and apply a transition — a classic useLayoutEffect use case.' }
+      { icon: '💬', title: 'Tooltips and popovers', description: 'Measuring the trigger element position then placing the popover — without one frame of it appearing in the wrong spot.' },
+      { icon: '📜', title: 'Chat scroll position', description: 'When older messages load above current view, adjust scrollTop synchronously so visible messages do not jump.' },
+      { icon: '📏', title: 'Auto-resizing text areas', description: 'Measure text content height and adjust the container — avoiding a visible resize pop after the fact.' },
+      { icon: '🎬', title: 'Animation libraries', description: 'Libraries that need accurate before-measurements taken synchronously, right before they calculate and apply a transition.' }
     ]
   },
 
   prosAndCons: {
     pros: [
-      'Eliminates visible flicker for measure-then-adjust DOM logic — the user only ever sees the final, correct layout.',
-      'Guarantees DOM reads happen against fresh, committed DOM and writes complete before paint — precise, predictable timing.',
-      'The exact right tool for a specific, well-defined category of layout-measurement problems that useEffect cannot solve cleanly.',
-      'Shares useEffect\'s familiar API (setup + cleanup + dependency array) — no new mental model to learn beyond the timing difference.'
+      'Eliminates visible flicker for measure-then-adjust DOM logic.',
+      'Guarantees DOM reads happen against fresh, committed DOM before paint.',
+      'Same API as useEffect — no new mental model, just different timing.',
+      'The exact right tool for tooltip/popover/scroll-correction problems.'
     ],
     cons: [
-      'Synchronous and paint-blocking — overuse can visibly slow down your app, making it feel less responsive than it would with useEffect.',
-      'Not available during server-side rendering (no DOM to measure) — React warns when it\'s used in an SSR path without a client-only guard.',
-      'Easy to reach for "to be safe" when useEffect would work identically and without the performance cost — the bar for using it should be a real, observed flicker.',
-      'Adds a layer of "why does THIS effect need special timing?" that future readers must understand — comment or name things clearly when you use it.'
+      'Synchronous and paint-blocking — overuse slows the app visibly.',
+      'Not available during server-side rendering — React warns.',
+      'Easy to reach for "to be safe" when useEffect works fine.',
+      'Future readers need to understand why this effect needs special timing.'
     ]
   },
 
   comparison: {
-    title: 'useEffect vs. useLayoutEffect — same API, different timing & guarantees',
+    title: 'useEffect vs. useLayoutEffect — same API, different timing',
     left: {
       title: '🌀 useEffect — async, after paint (the default)',
       tone: 'good',
       code: `useEffect(() => {
   document.title = \`\${count} unread messages\`;
-  // Non-visual work: fine to happen "a moment later" —
-  // doesn't block the browser from painting first
+  // Non-visual work — fine to happen "a moment later"
 }, [count]);`,
-      note: 'Use for the vast majority of effects: data fetching, subscriptions, logging, setting non-layout state — anything that doesn\'t need to "win the race" against paint.'
+      note: 'Use for data fetching, subscriptions, logging, non-layout state — anything that does not need to race against paint.'
     },
     right: {
       title: '📐 useLayoutEffect — sync, before paint (the exception)',
@@ -142,10 +141,9 @@ useLayoutEffect(() => {
       code: `useLayoutEffect(() => {
   const { height } = ref.current.getBoundingClientRect();
   setTooltipOffset(-height - 8);
-  // Visual work: MUST complete before the user sees anything,
-  // or they'll glimpse the wrong position for one frame
+  // MUST complete before paint or user sees wrong position
 }, []);`,
-      note: 'Use only for the narrow case of "measure the DOM, then synchronously adjust layout/state before paint" — and only when you\'ve observed a real flicker without it.'
+      note: 'Use only for measure-then-adjust DOM logic — and only when you have observed a real flicker without it.'
     }
   },
 
@@ -153,46 +151,46 @@ useLayoutEffect(() => {
     items: [
       {
         title: 'Reaching for useLayoutEffect by default "to be safe"',
-        wrong: `useLayoutEffect(() => { fetchData().then(setData); }, []); // ❌ blocks paint for something that doesn't need to`,
-        right: `useEffect(() => { fetchData().then(setData); }, []); // ✅ data fetching has nothing to do with layout — let paint happen first`,
-        note: 'Synchronous, paint-blocking execution is a real cost. Reserve useLayoutEffect for effects that GENUINELY read layout and synchronously adjust it — for everything else (fetching, subscriptions, logging, timers), useEffect is both correct and faster.'
+        wrong: `useLayoutEffect(() => { fetchData().then(setData); }, []); // ❌ blocks paint for no reason`,
+        right: `useEffect(() => { fetchData().then(setData); }, []); // ✅ data fetching has nothing to do with layout`,
+        note: 'Synchronous paint-blocking is a real cost. Reserve useLayoutEffect for effects that genuinely read layout and synchronously adjust it.'
       },
       {
         title: 'Using it during server-side rendering without a guard',
-        wrong: `useLayoutEffect(() => {\n  const rect = ref.current.getBoundingClientRect(); // ❌ no DOM exists on the server — warning + crash risk\n}, []);`,
-        right: `useEffect(() => {\n  // ✅ runs only on the client, after hydration — or guard with typeof window !== 'undefined'\n  const rect = ref.current.getBoundingClientRect();\n}, []);`,
-        note: 'There\'s no DOM (and nothing to measure) during server rendering. React will emit a warning if useLayoutEffect runs in an SSR context — guard layout-measurement logic so it only runs client-side, or use useEffect if the strict pre-paint timing isn\'t actually required.'
+        wrong: `useLayoutEffect(() => {\n  const rect = ref.current.getBoundingClientRect(); // ❌ no DOM on server\n}, []);`,
+        right: `useEffect(() => {\n  const rect = ref.current.getBoundingClientRect(); // ✅ runs only on client\n}, []);`,
+        note: 'There is no DOM during server rendering. React warns if useLayoutEffect runs in an SSR context. Use useEffect when strict pre-paint timing is not required.'
       },
       {
-        title: 'Doing expensive work inside it that doesn\'t need pre-paint timing',
-        note: 'Because useLayoutEffect blocks the browser from painting until it finishes, any slow computation inside it directly delays the user from seeing ANYTHING new. Keep useLayoutEffect callbacks fast and focused — measure, compute, adjust — and move anything that doesn\'t need that exact timing into a separate useEffect.'
+        title: 'Doing expensive work inside it',
+        note: 'useLayoutEffect blocks the browser from painting until it finishes. Any slow computation inside it directly delays what the user sees. Keep it small, fast, and focused on measure + adjust.'
       }
     ]
   },
 
   bestPractices: [
-    'Default to useEffect. Switch to useLayoutEffect only after observing an actual visible flicker caused by measure-then-adjust DOM logic.',
-    'Keep useLayoutEffect callbacks small, fast, and focused purely on measurement + synchronous adjustment — move anything else to useEffect.',
-    'Guard DOM-measurement code so it never runs during server-side rendering (no DOM exists there) — or keep such logic in useEffect/client-only boundaries.',
-    'Pair it with useRef for the elements you need to measure — getBoundingClientRect(), offsetHeight/offsetWidth, scrollHeight are the typical reads.',
-    'Document WHY a particular effect needs pre-paint timing — it\'s the kind of subtle decision that benefits a future reader (or your future self).'
+    'Default to useEffect. Switch to useLayoutEffect only after observing a real visible flicker.',
+    'Keep callbacks small and fast — measure, compute, adjust only.',
+    'Guard DOM-measurement code from running during server-side rendering.',
+    'Pair with useRef for elements you need to measure — getBoundingClientRect, offsetHeight.',
+    'Leave a short comment explaining WHY this effect needs pre-paint timing.'
   ],
 
   interviewQuestions: [
-    { q: 'What is the key difference between useEffect and useLayoutEffect?', a: 'They share the exact same API (setup function, optional cleanup, dependency array) — the difference is purely WHEN they run relative to the browser painting. useEffect runs asynchronously, AFTER the browser has painted the updated DOM to the screen. useLayoutEffect runs synchronously, immediately after React commits DOM changes but BEFORE the browser paints — and it blocks that paint until it finishes.' },
-    { q: 'Why would using useEffect (instead of useLayoutEffect) for a "measure and reposition" tooltip cause a visible flicker?', a: 'Because useEffect runs AFTER the browser has already painted the screen. If your effect measures an element\'s position and then calls setState to reposition it, the user briefly sees the tooltip in its initial (wrong) position during the first paint, and then sees it "jump" to the correct position once the effect runs and triggers a re-render — a visible flicker. useLayoutEffect performs the measure-and-adjust cycle BEFORE the first paint, so the user only ever sees the final, correctly-positioned result.' },
-    { q: 'Why does the React team recommend defaulting to useEffect and reaching for useLayoutEffect only when necessary?', a: 'Because useLayoutEffect runs synchronously and BLOCKS the browser from painting until it completes — meaning any slow work inside it directly delays what the user sees. useEffect, running asynchronously after paint, doesn\'t carry this cost, so for the vast majority of effects (data fetching, subscriptions, logging, non-layout state updates) it\'s both simpler and better for perceived performance. useLayoutEffect should be reserved for the specific, narrow case where its pre-paint timing genuinely prevents a visible problem.' },
-    { q: 'Why might using useLayoutEffect cause a warning during server-side rendering, and how would you handle that?', a: 'Server-side rendering produces HTML with no real browser DOM to measure — there\'s no layout to read and no paint to synchronize with, so useLayoutEffect\'s defining behavior is meaningless (and potentially erroring) in that context; React emits a warning to flag the mismatch. The fix is to ensure layout-measurement code only runs on the client — e.g. by keeping it in an effect that naturally only fires after hydration, or guarding it so it\'s skipped during the server render pass.' },
-    { q: 'Give a concrete example of when useLayoutEffect is the right tool, and explain why useEffect wouldn\'t work as well there.', a: 'Repositioning a tooltip based on its target element\'s measured size and position is a textbook case: you need to read the freshly-rendered DOM (getBoundingClientRect) and then SYNCHRONOUSLY write an adjusted position before the user sees anything. With useEffect, that read-then-write cycle happens after the browser has already painted the tooltip in its default (wrong) spot — producing a visible jump. useLayoutEffect performs the same read-then-write cycle before paint, so the very first thing the user sees is the correctly-positioned tooltip, with zero flicker.' }
+    { q: 'What is the key difference between useEffect and useLayoutEffect?', a: 'They share the same API — the difference is WHEN they run. useEffect runs asynchronously AFTER the browser has painted. useLayoutEffect runs synchronously after React commits DOM changes but BEFORE the browser paints, and it blocks the paint until it finishes.' },
+    { q: 'Why would using useEffect for a tooltip cause a visible flicker?', a: 'Because useEffect runs AFTER the browser has already painted. The user briefly sees the tooltip in its default (wrong) position, then sees it jump to the correct position when the effect re-renders it. useLayoutEffect performs the measure-and-adjust before the first paint, so the user only ever sees the correct result.' },
+    { q: 'Why does the React team recommend defaulting to useEffect?', a: 'Because useLayoutEffect blocks the browser from painting until it completes. Any slow work inside it delays what the user sees. useEffect does not carry this cost. Reserve useLayoutEffect for the narrow case where its pre-paint timing genuinely prevents a visible problem.' },
+    { q: 'Why does useLayoutEffect cause a warning during server-side rendering?', a: 'Server rendering produces HTML with no real DOM. There is nothing to measure and no paint to synchronize with. React warns because useLayoutEffect\'s behavior is meaningless in that context. Keep layout-measurement code in client-only boundaries or use useEffect.' },
+    { q: 'Give a concrete example of when useLayoutEffect is the right tool.', a: 'Repositioning a tooltip: read getBoundingClientRect, then synchronously write the adjusted position before the user sees anything. With useEffect, the tooltip briefly appears in the wrong spot before jumping. With useLayoutEffect, the user only ever sees the correctly-placed tooltip.' }
   ],
 
   summary: {
-    description: 'useLayoutEffect is useEffect\'s synchronous, pre-paint sibling — purpose-built for the narrow but important case of "measure the DOM, then synchronously adjust layout before the user sees anything". It prevents visible flicker in tooltips, scroll-position preservation, and similar measure-then-adjust scenarios — but its paint-blocking nature means useEffect should remain your default, with useLayoutEffect reserved for cases where you\'ve observed a real flicker it specifically fixes.'
+    description: 'useLayoutEffect is useEffect\'s synchronous, pre-paint sibling — built for the narrow case of measuring the DOM and adjusting layout before the user sees anything. It prevents flicker in tooltips, scroll corrections, and similar scenarios, but its paint-blocking nature means useEffect should be your default.'
   },
 
   furtherReading: [
-    { label: 'Official docs', note: 'react.dev/reference/react/useLayoutEffect — the canonical reference, including the explicit guidance "useLayoutEffect can hurt performance — prefer useEffect when possible".' },
-    { label: 'Related topic', note: 'See "useEffect" for the foundational Hook this one specializes, and "useRef" for the DOM-measurement pattern they\'re typically combined with.' }
+    { label: 'Official docs', note: 'react.dev/reference/react/useLayoutEffect — includes explicit guidance: "useLayoutEffect can hurt performance — prefer useEffect when possible".' },
+    { label: 'Related topic', note: 'See "useEffect" for the foundational Hook, and "useRef" for the DOM-measurement pattern they are commonly combined with.' }
   ]
 };
 

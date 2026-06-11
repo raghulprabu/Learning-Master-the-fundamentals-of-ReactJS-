@@ -3,18 +3,18 @@ const useDeferredValueContent = {
   title: 'useDeferredValue Hook',
   icon: '⏱️',
   theme: 'blue',
-  tagline: 'Get a "lagging behind" copy of a value that updates only once the urgent work settles down.',
+  tagline: 'useDeferredValue gives you a copy of a value that updates only when the urgent work settles.',
   meta: 'Hooks · Concurrent React',
 
   whatIsIt: {
     description: [
-      'useDeferredValue takes a value and returns a deferred copy of it that may "lag behind" the real one during fast updates. React keeps the old value on screen for expensive re-renders until it can catch up in the background — without you having to manage timers or extra state.',
-      'It\'s conceptually similar to debouncing or throttling a value — but instead of a fixed time delay, React decides *when* to update the deferred value based on what the device can keep up with, integrating naturally with concurrent rendering.'
+      'useDeferredValue takes a value and returns a deferred copy that may "lag behind" the real one during fast updates. React keeps showing the old value for expensive re-renders until it can catch up in the background.',
+      'It is similar to debouncing — but instead of a fixed time delay, React decides when to update based on what the device can handle.'
     ],
     points: [
       'Syntax: const deferredValue = useDeferredValue(value);',
-      'On the initial render, the deferred value equals the original value.',
-      'On updates, React first re-renders with the OLD deferred value (keeping things responsive), then schedules a background re-render with the NEW value once resources allow.'
+      'On the initial render, the deferred value equals the real value.',
+      'On updates, React first re-renders with the OLD deferred value, then schedules a background re-render with the new value.'
     ],
     code: { title: 'The basic shape', snippet: `function SearchPage() {
   const [query, setQuery] = useState('');
@@ -31,37 +31,37 @@ const useDeferredValueContent = {
     analogy: {
       icon: '🌊',
       title: 'Real-World Analogy',
-      text: '"Imagine watching a live caption track on a video call — it doesn\'t update letter-by-letter in perfect sync with the speaker; it shows the previous sentence smoothly while quietly catching up to the latest words as soon as it can keep pace. useDeferredValue works the same way: the UI keeps showing a coherent \'previous\' version smoothly, then \'catches up\' to the latest value the moment the system has spare capacity — instead of stuttering trying to keep perfectly in sync."'
+      text: '"Imagine live captions on a video call. They do not update letter by letter in perfect sync with the speaker. They show the previous sentence smoothly while catching up to the latest words. useDeferredValue works the same way — the UI shows a coherent previous version, then catches up when the system has spare capacity."'
     }
   },
 
   whyUsed: {
-    description: 'When a fast-changing value (like search text) feeds directly into an expensive render (like a 5,000-row results list), re-rendering on every change can make the whole page feel sluggish. useDeferredValue lets the *expensive consumer* of that value update at its own pace, while the value\'s direct producer (the input) stays perfectly responsive.',
+    description: 'When a fast-changing value (like search text) feeds into an expensive render (like a 5,000-row results list), re-rendering on every change can make the whole page feel slow.',
     points: [
-      'Keeps expensive renders from blocking urgent updates — without you needing to control where the original state update happens.',
-      'Particularly useful when you *receive* a fast-changing value (e.g. via props) and can\'t wrap its origin in startTransition yourself.',
-      'Lets React show stale-but-consistent content smoothly rather than freezing or flickering through every intermediate state.',
-      'Integrates with Suspense — React can show old content while new content (including data) is loading in the background.'
+      'Keeps expensive renders from blocking urgent updates.',
+      'Useful when you receive a fast-changing value via props and cannot wrap its setState in startTransition.',
+      'Lets React show stale-but-consistent content smoothly rather than flickering.',
+      'Integrates with Suspense — shows old content while new content loads in the background.'
     ]
   },
 
   whenToUse: {
-    description: 'Reach for useDeferredValue when a value changes quickly and feeds into a render that\'s known to be expensive — and you\'d rather let that render "lag a little" than have it block the rest of the UI.',
+    description: 'Use useDeferredValue when a fast-changing value feeds into an expensive render and you would rather let that render lag slightly than block the rest of the UI.',
     points: [
-      'You receive a fast-changing value as a prop (so you can\'t wrap its setState in startTransition yourself).',
-      'You want to keep showing the previous, consistent results while new ones are being prepared, rather than a jarring blank/loading flash.',
-      'A part of the UI is expensive to re-render and doesn\'t need to be perfectly in sync with every keystroke — search results, previews, visualizations.',
-      'You want behavior similar to debouncing/throttling, but adaptive to the user\'s actual device performance rather than a fixed delay.'
+      'You receive a fast-changing value as a prop and cannot wrap its setState in startTransition.',
+      'You want to keep showing previous results while new ones are being prepared.',
+      'A part of the UI is expensive to re-render — search results, previews, charts.',
+      'You want adaptive behavior instead of a fixed debounce delay.'
     ],
     analogy: {
       icon: '🆚',
-      title: 'useDeferredValue vs. debouncing/throttling',
-      text: '"Debouncing/throttling use FIXED time delays you choose by hand — e.g. always wait 300ms. useDeferredValue instead asks React to update the value \'as soon as resources allow\', adapting automatically to the actual device and current workload — faster on powerful machines, more patient on slow ones — and it integrates with React\'s rendering and Suspense, rather than working purely on a wall-clock timer."'
+      title: 'useDeferredValue vs. debouncing',
+      text: '"Debouncing uses a FIXED time delay you choose — always wait 300ms. useDeferredValue asks React to update the value \'as soon as resources allow\', adapting to the actual device — faster on powerful machines, more patient on slow ones. It integrates with React\'s rendering and Suspense rather than a wall-clock timer."'
     }
   },
 
   howItWorks: {
-    description: 'On each render, React compares the deferred value to the latest real value. If they differ, React first re-renders with the OLD deferred value (so the UI stays responsive immediately), then — in the background, at lower priority — re-renders again with the new value once it can do so without blocking urgent work.',
+    description: 'React compares the deferred value to the latest real value. If they differ, React first re-renders with the OLD deferred value to stay responsive, then schedules a background re-render with the new value once it can do so without blocking urgent work.',
     code: {
       title: 'Visibly "stale-but-smooth" search results',
       snippet: `function SearchResults({ query }) {
@@ -89,9 +89,9 @@ function SearchPage({ allItems }) {
 }`
     },
     points: [
-      'Comparing `value !== deferredValue` gives you an easy "is this content stale/updating?" signal — handy for a dimmed/pending visual treatment.',
-      'Pairing useDeferredValue with React.memo on the expensive child prevents it from re-rendering at all until the deferred value actually changes.',
-      'Unlike a fixed-delay debounce, the "lag" adapts to the device — fast machines catch up almost immediately; slow ones lean more on the old value to stay smooth.'
+      'Comparing value !== deferredValue gives you a clear "content is stale" signal for a visual treatment.',
+      'Pair with React.memo on the expensive child — it will not re-render until the deferred value actually changes.',
+      'Unlike a fixed debounce, the lag adapts to the device — fast machines catch up almost immediately.'
     ]
   },
 
@@ -107,27 +107,27 @@ function SearchPage({ allItems }) {
   },
 
   realWorldExamples: {
-    intro: 'useDeferredValue is the right tool whenever "smoothness" matters more than "perfect sync" for an expensive view:',
+    intro: 'useDeferredValue is the right tool when smoothness matters more than perfect sync for an expensive view:',
     items: [
-      { icon: '🔎', title: 'Search results panels', description: 'A results list backed by a large in-memory dataset stays visually smooth while typing — showing the previous results until the new set is ready, instead of stutter-rendering on every keystroke.' },
-      { icon: '🖼️', title: 'Live previews (Markdown, code, design tools)', description: 'A Markdown editor\'s rendered preview pane can lag a beat behind fast typing, staying smooth, while the raw text editor itself remains perfectly instantaneous.' },
-      { icon: '📊', title: 'Data visualizations driven by sliders/inputs', description: 'Dragging a slider that re-renders a complex chart can defer the chart\'s data prop — keeping the slider buttery-smooth while the chart catches up shortly after.' },
-      { icon: '🧭', title: 'Autocomplete / suggestion dropdowns over large datasets', description: 'Suggestions computed from thousands of entries can lag slightly behind keystrokes without harming usability — users barely perceive a few-frame difference in a dropdown.' }
+      { icon: '🔎', title: 'Search results panels', description: 'A large in-memory dataset stays visually smooth while typing — showing previous results until the new set is ready.' },
+      { icon: '🖼️', title: 'Live previews (Markdown, code)', description: 'A Markdown editor\'s rendered preview pane lags a beat behind fast typing while the raw text editor stays perfectly instant.' },
+      { icon: '📊', title: 'Data visualizations with sliders', description: 'Dragging a slider that re-renders a complex chart defers the chart\'s data prop — the slider stays buttery-smooth.' },
+      { icon: '🧭', title: 'Autocomplete over large datasets', description: 'Suggestions computed from thousands of entries can lag slightly — users barely perceive a few-frame difference in a dropdown.' }
     ]
   },
 
   prosAndCons: {
     pros: [
-      'Keeps expensive consumers of fast-changing values from blocking the rest of the UI — without restructuring where the state lives.',
-      'Adapts automatically to device performance — no fixed delay to hand-tune like with debouncing.',
-      'Provides an easy staleness signal (value !== deferredValue) for subtle "updating…" visual treatments.',
-      'Composes naturally with React.memo and Suspense for smooth, coherent loading experiences.'
+      'Keeps expensive consumers from blocking the rest of the UI — without restructuring state.',
+      'Adapts automatically to device performance — no fixed delay to hand-tune.',
+      'Easy staleness signal (value !== deferredValue) for a subtle "updating" visual.',
+      'Composes naturally with React.memo and Suspense.'
     ],
     cons: [
-      'Only meaningful in environments with concurrent rendering (React 18+) — and only helps if the deferred consumer is genuinely expensive to render.',
-      'Doesn\'t reduce the amount of work done — a slow computation is still slow; it only changes when/how it\'s scheduled relative to urgent updates.',
-      'The "lag" is intentionally not deterministic/timed — harder to reason about precisely than a fixed debounce delay if your use case truly needs predictable timing.',
-      'Easy to reach for as a default "make it fast" fix when the real win would come from memoization, virtualization, or reducing dataset size.'
+      'Only meaningful in environments with concurrent rendering (React 18+).',
+      'Does not reduce the amount of work — a slow computation is still slow.',
+      'The lag is not deterministic — harder to reason about than a fixed debounce if timing matters.',
+      'Easy to reach for when memoization, virtualization, or smaller datasets would actually help.'
     ]
   },
 
@@ -140,7 +140,7 @@ function SearchPage({ allItems }) {
 // control how its setState is scheduled
 const deferredQuery = useDeferredValue(query);
 <ExpensiveList query={deferredQuery} />`,
-      note: 'Use when you can\'t (or don\'t want to) wrap the original update — you just want a smoother-lagging copy of the value you have.'
+      note: 'Use when you cannot or do not want to wrap the original update — you just want a smoother-lagging copy of the value.'
     },
     right: {
       title: '🚦 useTransition — you trigger the UPDATE',
@@ -149,7 +149,7 @@ const deferredQuery = useDeferredValue(query);
 function handleClick() {
   startTransition(() => setTab(next)); // you control this
 }`,
-      note: 'Use when you initiate the state change yourself and want to mark that specific update as low priority — plus get a built-in pending flag.'
+      note: 'Use when you initiate the state change yourself and want to mark it as low priority — plus get a built-in pending flag.'
     }
   },
 
@@ -157,46 +157,46 @@ function handleClick() {
     items: [
       {
         title: 'Expecting useDeferredValue to reduce computation cost',
-        wrong: `const deferredQuery = useDeferredValue(query);\nconst results = searchMillionRows(deferredQuery); // ❌ still scans a million rows — just less often`,
+        wrong: `const deferredQuery = useDeferredValue(query);\nconst results = searchMillionRows(deferredQuery); // ❌ still scans a million rows`,
         right: `const deferredQuery = useDeferredValue(query);\nconst results = useMemo(() => searchMillionRows(deferredQuery), [deferredQuery]); // ✅ memoized AND deferred`,
-        note: 'useDeferredValue changes WHEN a render happens relative to urgent work — it doesn\'t make the render itself cheaper. Pair it with useMemo (and good algorithms/data structures) to actually reduce the cost of the work being deferred.'
+        note: 'useDeferredValue changes WHEN a render happens — it does not make the render cheaper. Pair it with useMemo to actually reduce the cost.'
       },
       {
-        title: 'Deferring a value that needs to be perfectly in sync (e.g. form validation)',
-        wrong: `const deferredEmail = useDeferredValue(email);\n<ErrorMessage valid={isValidEmail(deferredEmail)} /> {/* ❌ validation message lags behind input — confusing */}`,
-        right: `<ErrorMessage valid={isValidEmail(email)} /> {/* ✅ validation feedback should always be immediate and accurate */}`,
-        note: 'Reserve deferring for content where a brief lag is genuinely imperceptible or harmless (large lists, previews, charts) — never for feedback the user needs to trust as accurate right now, like form validation or error messages.'
+        title: 'Deferring a value that needs to be perfectly in sync',
+        wrong: `const deferredEmail = useDeferredValue(email);\n<ErrorMessage valid={isValidEmail(deferredEmail)} /> {/* ❌ validation lags behind */}`,
+        right: `<ErrorMessage valid={isValidEmail(email)} /> {/* ✅ validation should always be immediate */}`,
+        note: 'Reserve deferring for content where a brief lag is harmless — never for validation or error messages the user needs to trust right now.'
       },
       {
         title: 'Forgetting to memoize the expensive child',
-        note: 'If the component receiving the deferred value isn\'t memoized (or doesn\'t itself memoize its expensive computation), it may still re-render and recompute on every parent render — regardless of whether the deferred value actually changed. useDeferredValue\'s benefit is best realized in combination with React.memo / useMemo on the consuming side.'
+        note: 'If the component receiving the deferred value is not memoized, it may still re-render on every parent render regardless. useDeferredValue works best combined with React.memo and useMemo on the consuming side.'
       }
     ]
   },
 
   bestPractices: [
-    'Use it specifically for values feeding *expensive, non-critical-timing* renders — large lists, previews, visualizations — never for validation/feedback that must stay perfectly in sync.',
-    'Pair it with useMemo (on the computation) and React.memo (on the component) — the deferred value alone doesn\'t make anything faster or skip re-renders by itself.',
-    'Use `value !== deferredValue` as a clean signal to apply a subtle "updating" visual treatment (slight opacity dim, faint spinner) for extra polish.',
-    'Reach for it when you receive the fast-changing value from elsewhere (e.g. props) — if you own the state update yourself, useTransition often gives you more direct control plus a pending flag.',
-    'Profile to confirm there\'s a real perceptible benefit — for cheap renders, the deferred value will simply equal the real one almost instantly, adding indirection without payoff.'
+    'Use it for values feeding expensive, non-critical-timing renders — large lists, previews, charts.',
+    'Pair with useMemo (on the computation) and React.memo (on the component).',
+    'Use value !== deferredValue as a signal to apply a subtle "updating" visual treatment.',
+    'Reach for it when you receive the fast-changing value via props — if you own the update, useTransition gives more direct control.',
+    'Profile first to confirm there is a real perceptible benefit.'
   ],
 
   interviewQuestions: [
-    { q: 'What does useDeferredValue do, conceptually?', a: 'It returns a "deferred" copy of a value that may temporarily lag behind the real one during fast updates. React keeps showing the old deferred value (and whatever expensive UI depends on it) smoothly, and updates it to the latest value in the background once it can do so without blocking more urgent rendering work — conceptually similar to an adaptive debounce built into React\'s scheduler.' },
-    { q: 'How is useDeferredValue different from manually debouncing a value with setTimeout?', a: 'A manual debounce uses a FIXED time delay you choose by hand (e.g. always wait 300ms), regardless of the device\'s actual performance. useDeferredValue instead asks React to update the value "as soon as resources allow" — adapting automatically to the current device and workload (catching up almost instantly on fast machines, lagging more on slow ones), and integrating directly with React\'s concurrent rendering and Suspense rather than running on a separate wall-clock timer.' },
-    { q: 'Does useDeferredValue make an expensive computation faster?', a: 'No — it changes WHEN that computation runs relative to more urgent updates, not how long it takes to run. A search over a million rows is still a search over a million rows; useDeferredValue just lets React defer running it (and re-rendering its result) until urgent work is handled, keeping the interface responsive in the meantime. To actually reduce the cost, you still need techniques like memoization, better algorithms, virtualization, or reducing the dataset size.' },
-    { q: 'How would you show users that content is "updating" while a deferred value catches up?', a: 'Compare the live value to its deferred counterpart — `const isStale = query !== deferredQuery` — and use that boolean to apply a subtle visual treatment, like reducing the opacity of the stale content or showing a small inline spinner, while the new content is being prepared in the background. This gives users a gentle, non-blocking signal that fresh results are on their way.' },
-    { q: 'When would you choose useDeferredValue over useTransition?', a: 'Choose useDeferredValue when you receive a fast-changing value (often via props) and can\'t — or don\'t want to — control how its underlying state update is scheduled; you just want a smoother-lagging copy of that value for an expensive consumer. Choose useTransition when YOU initiate the state update yourself and want to explicitly mark it as low-priority, while also getting a built-in `isPending` flag to drive loading indicators.' }
+    { q: 'What does useDeferredValue do?', a: 'It returns a deferred copy of a value that may temporarily lag behind the real one. React keeps showing the old deferred value smoothly, then updates it in the background once it can do so without blocking urgent rendering. It is like an adaptive debounce built into React\'s scheduler.' },
+    { q: 'How is useDeferredValue different from manually debouncing with setTimeout?', a: 'A manual debounce uses a fixed time delay you choose by hand. useDeferredValue asks React to update the value "as soon as resources allow" — adapting automatically to the current device. It also integrates directly with React\'s concurrent rendering and Suspense instead of running on a wall-clock timer.' },
+    { q: 'Does useDeferredValue make an expensive computation faster?', a: 'No — it changes WHEN that computation runs relative to urgent updates, not how long it takes. A search over a million rows is still a search over a million rows. Pair it with useMemo and good algorithms to actually reduce the cost.' },
+    { q: 'How do you show users that content is "updating"?', a: 'Compare the live value to its deferred copy — const isStale = query !== deferredQuery. Use that boolean to apply a subtle visual treatment like reducing the opacity of the stale content while the new content is being prepared.' },
+    { q: 'When would you choose useDeferredValue over useTransition?', a: 'Choose useDeferredValue when you receive a fast-changing value via props and cannot control how its setState is scheduled. Choose useTransition when YOU initiate the state update yourself and want to mark it as low-priority, plus get a built-in isPending flag.' }
   ],
 
   summary: {
-    description: 'useDeferredValue gives you a "smoothly lagging" copy of a fast-changing value — letting expensive consumers (big lists, previews, charts) update at a pace the device can handle, without freezing the rest of the interface or requiring you to control the original state update. It\'s an adaptive alternative to fixed-delay debouncing that plugs directly into React\'s concurrent rendering — pair it with useMemo/React.memo for real performance wins, and reserve it for content where a brief lag is genuinely harmless.'
+    description: 'useDeferredValue gives you a smoothly lagging copy of a fast-changing value. It lets expensive consumers update at a pace the device can handle without freezing the rest of the interface. Pair it with useMemo and React.memo, and reserve it for content where a brief lag is harmless.'
   },
 
   furtherReading: [
-    { label: 'Official docs', note: 'react.dev/reference/react/useDeferredValue — the canonical reference, including the "Showing stale content while fresh content is loading" pattern with isStale.' },
-    { label: 'Related topic', note: 'See "useTransition" for the update-oriented sibling Hook, and "Debouncing in React" for the classic fixed-delay alternative this Hook adaptively replaces.' }
+    { label: 'Official docs', note: 'react.dev/reference/react/useDeferredValue — the canonical reference including the isStale pattern.' },
+    { label: 'Related topic', note: 'See "useTransition" for the update-oriented sibling, and "Debouncing in React" for the classic fixed-delay alternative.' }
   ]
 };
 

@@ -3,20 +3,20 @@ const advancedPatternsContent = {
   title: 'Advanced React Patterns',
   icon: '🎨',
   theme: 'purple',
-  tagline: 'Higher-Order Components, Render Props, Compound Components, and the patterns that power great React libraries.',
+  tagline: 'HOCs, Render Props, Compound Components, and the patterns that power great React libraries.',
   meta: 'Patterns · Architecture',
 
   whatIsIt: {
     description: [
-      'Advanced React patterns are reusable, battle-tested solutions to common component composition and logic-sharing problems. They describe HOW to structure components and hooks so that behavior, state, and rendering concerns can be shared, configured, and extended without tight coupling.',
-      'The most important patterns: Higher-Order Components (HOC), Render Props, Compound Components, the Provider Pattern, and Controlled/Uncontrolled components. Each solves a specific problem; knowing which to reach for (and when custom hooks are better) is the skill.'
+      'Advanced React patterns are reusable solutions to common problems in component composition and logic sharing. They describe how to structure components and hooks so behavior and state can be shared and extended without tight coupling.',
+      'The most important patterns: Higher-Order Components (HOC), Render Props, Compound Components, the Provider Pattern, and Controlled/Uncontrolled components. Custom hooks now replace most Render Props use cases.'
     ],
     points: [
-      'Higher-Order Components (HOC): a function that takes a component and returns an enhanced component — used for cross-cutting concerns like auth checks, logging, data fetching.',
-      'Render Props: a component that delegates "what to render" via a prop that is a function — flexible, but largely superseded by custom hooks.',
-      'Compound Components: multiple components working together with shared implicit state (e.g. <Select> + <Select.Option>) — the pattern that powers most component libraries.',
-      'Controlled Components: the parent fully controls state via props + onChange — enables maximum flexibility for consumers.',
-      'Provider Pattern: wraps children with a Context.Provider to supply shared state/logic — the foundation of React libraries like React Router, React Query, Zustand, and auth libraries.'
+      'Higher-Order Components (HOC): a function that takes a component and returns an enhanced one — used for auth checks, logging, and data fetching.',
+      'Render Props: a component delegates "what to render" via a function prop — flexible, but largely replaced by custom hooks.',
+      'Compound Components: multiple components working together via shared implicit state (e.g. <Tabs> + <Tabs.Tab>) — powers most component libraries.',
+      'Controlled Components: the parent fully controls state via props + onChange — maximum flexibility for consumers.',
+      'Provider Pattern: wraps children with Context.Provider to share state — the foundation of React Router, TanStack Query, and auth libraries.'
     ],
     code: { title: 'The four patterns at a glance', snippet: `// 1. HIGHER-ORDER COMPONENT
 const withAuth = (WrappedComponent) => (props) => {
@@ -60,32 +60,32 @@ const [rating, setRating] = useState(0);
     analogy: {
       icon: '🧰',
       title: 'Real-World Analogy',
-      text: '"Advanced React patterns are like LEGO system design: HOCs are like factory machines (you put a plain brick in, a pre-assembled structure comes out); Render Props are like a mould that lets you choose what material to fill it with; Compound Components are like a LEGO set where individual pieces (head, body, legs) are designed to work together and share a hidden connector system; the Provider Pattern is like a shared parts bin that all builders at the same table can reach into without asking each other for pieces."'
+      text: '"These patterns are like LEGO system design. HOCs are factory machines — you put a plain brick in, a pre-assembled structure comes out. Render Props are moulds — you choose what material to fill them with. Compound Components are LEGO sets where individual pieces (head, body, legs) share a hidden connector. The Provider Pattern is a shared parts bin everyone at the same table can reach into without asking."'
     }
   },
 
   whyUsed: {
-    description: 'These patterns exist because simple prop-drilling and copy-pasting logic don\'t scale. Each pattern solves a specific composition or sharing challenge that arises as apps grow more complex.',
+    description: 'Prop-drilling and copy-pasting logic do not scale. Each pattern solves a specific composition or logic-sharing challenge that appears as apps grow.',
     points: [
-      'HOCs allow cross-cutting concerns (auth, analytics, feature flags, error boundaries) to be applied to components without modifying them.',
-      'Render Props (and custom hooks) allow stateful logic to be shared without imposing a rendering structure.',
-      'Compound Components model naturally "grouped" UI elements where children need to share implicit state (like <select> + <option> in HTML).',
-      'Controlled components give consumers full control over state — critical for form libraries, design systems, and any reusable input component.'
+      'HOCs apply cross-cutting concerns (auth, analytics, feature flags) to components without modifying them.',
+      'Render Props and custom hooks share stateful logic without imposing a render structure.',
+      'Compound Components model naturally grouped UI elements where children share implicit state.',
+      'Controlled components give consumers full control over state — critical for form libraries and design systems.'
     ]
   },
 
   whenToUse: {
-    description: 'Modern React leans heavily on custom hooks — but these patterns remain essential in specific contexts, especially when building component libraries.',
+    description: 'Modern React leans on custom hooks — but these patterns remain essential when building component libraries.',
     points: [
-      'HOC: apply behavior to 3+ components without modifying each (auth wrapper, feature flag gate, analytics tracking); but prefer hooks when logic doesn\'t need to add rendering.',
-      'Render Props: legacy codebases or when a render function must be passed directly as a prop. New code: almost always use a custom hook instead.',
-      'Compound Components: component library elements that have strongly-related subcomponents (Tabs+Tab, Menu+MenuItem, Accordion+Panel).',
-      'Controlled pattern: any input component intended for reuse — always expose value+onChange to give consumers control over state.'
+      'HOC: apply one behavior to many components without editing each (auth wrapper, feature flag, analytics tracking).',
+      'Render Props: legacy code or when a render function must be passed directly as a prop. New code: use a custom hook instead.',
+      'Compound Components: library elements with strongly related subcomponents (Tabs+Tab, Menu+MenuItem, Accordion+Panel).',
+      'Controlled pattern: any reusable input — always expose value+onChange to give consumers control over state.'
     ],
     analogy: {
       icon: '⚠️',
       title: 'When to prefer custom hooks over these patterns',
-      text: '"Custom hooks replaced Render Props for almost all logic-sharing use cases in React 16.8+. Before hooks, sharing \'is the user online?\' state meant writing a <NetworkStatus render={isOnline => ...}> render-prop component. Now you write useNetworkStatus() — same logic, simpler API, composable with other hooks, no extra component in the tree. Choose render props when the caller genuinely needs to control the rendering; choose a hook when you\'re just sharing logic."'
+      text: '"Custom hooks replaced Render Props for almost all logic-sharing in React 16.8+. Before hooks, sharing \'is the user online?\' state meant writing a <NetworkStatus render={isOnline => ...}> component. Now you write useNetworkStatus() — same logic, simpler API, composable with other hooks, no extra component in the tree. Choose render props only when the caller genuinely needs to control rendering. For logic sharing, use a hook."'
     }
   },
 
@@ -142,9 +142,9 @@ Accordion.Item = function AccordionItem({ id, children }) {
   </Accordion.Item>
 </Accordion>` },
     points: [
-      'The "dot notation" API (Accordion.Item, Tabs.Tab) is implemented by attaching the subcomponent as a property on the parent function: Accordion.Item = function(...) {...}. This groups related components under one namespace without a named export for each.',
-      'Uncontrolled variant of Compound Components: let consumers optionally pass open/onOpenChange to "lift" control out if needed — the "controlled/uncontrolled escape hatch" pattern used by Radix UI, Headless UI, and React Aria.',
-      'Context is scoped to the subtree — two <Accordion> instances on the same page each have their own independent Context value, even though they use the same Context object.'
+      'The dot notation API (Accordion.Item, Tabs.Tab) is made by attaching the subcomponent as a property: Accordion.Item = function(...) {}. Groups related components under one namespace.',
+      'Two <Accordion> instances on the same page each get their own independent Context value — the same Context object is scoped to each provider\'s subtree.',
+      'Support both controlled and uncontrolled modes for compound components — let consumers optionally lift control out if needed.'
     ]
   },
 
@@ -152,25 +152,25 @@ Accordion.Item = function AccordionItem({ id, children }) {
     title: 'Choosing the right pattern',
     steps: [
       { icon: '🤔', label: 'Need to share LOGIC across components?', note: 'Custom hook — cleanest for most cases' },
-      { icon: '🎁', label: 'Need to wrap component with BEHAVIOR (auth, loading)?', note: 'HOC — or React Router\'s protected route pattern' },
-      { icon: '🧩', label: 'Components naturally work TOGETHER (Tabs, Select)?', note: 'Compound Components via Context' },
-      { icon: '🎛️', label: 'Component should be CONTROLLED by parent?', note: 'Controlled Component pattern: value + onChange' },
-      { icon: '🌳', label: 'Multiple components need SHARED state/services?', note: 'Provider Pattern (Context + custom hook)' }
+      { icon: '🎁', label: 'Need to wrap component with BEHAVIOR?', note: 'HOC — auth wrapper, loading, error boundary' },
+      { icon: '🧩', label: 'Components naturally work TOGETHER?', note: 'Compound Components via Context' },
+      { icon: '🎛️', label: 'Should parent CONTROL the state?', note: 'Controlled Component: value + onChange' },
+      { icon: '🌳', label: 'Multiple components need SHARED state?', note: 'Provider Pattern (Context + custom hook)' }
     ]
   },
 
   realWorldExamples: {
-    intro: 'These patterns power the React ecosystem\'s most-used libraries:',
+    intro: 'These patterns power the most-used React libraries:',
     items: [
       {
         icon: '🧩',
-        title: 'Radix UI Primitives — Compound Components in production',
-        description: '<Dialog.Root>, <Dialog.Trigger>, <Dialog.Content>, <Dialog.Close> — each component is simple and focused, sharing implicit state through the Dialog\'s Context. Consumers compose the exact UI they want; the library handles accessibility, focus trapping, and aria attributes.'
+        title: 'Radix UI — Compound Components in production',
+        description: '<Dialog.Root>, <Dialog.Trigger>, <Dialog.Content>, <Dialog.Close> — each is simple and focused, sharing implicit state through Context. Consumers compose exactly the UI they need; the library handles accessibility and focus trapping.'
       },
       {
         icon: '🛡️',
-        title: 'React Router\'s nested route HOC pattern',
-        description: '<Route element={<ProtectedRoute><Dashboard /></ProtectedRoute>}> — ProtectedRoute is effectively an HOC in component form: it wraps the child and adds auth-check behavior without Dashboard knowing about authentication at all.',
+        title: 'React Router protected routes',
+        description: '<Route element={<ProtectedRoute><Dashboard /></ProtectedRoute>}> — ProtectedRoute is effectively an HOC in component form: it wraps the child and adds auth-checking without Dashboard knowing about authentication.',
         code: `// The "component-form HOC" — same concept as withAuth, different syntax
 function ProtectedRoute({ children }) {
   const { user, status } = useAuth();
@@ -181,35 +181,35 @@ function ProtectedRoute({ children }) {
       {
         icon: '⚛️',
         title: 'react-hook-form — Controlled + Uncontrolled hybrid',
-        description: 'Uses uncontrolled inputs (ref-based) internally for performance, but exposes a controlled-looking API via the Controller component and register function — combining the performance of uncontrolled inputs with the ergonomics of controlled ones. This "control inversion" pattern is what makes it so fast.'
+        description: 'Uses uncontrolled inputs (ref-based) internally for performance, but exposes a controlled-looking API via Controller and register. Combines the speed of uncontrolled inputs with the ergonomics of controlled ones.'
       },
       {
         icon: '🎣',
-        title: 'TanStack Query\'s Provider + custom hooks',
-        description: '<QueryClientProvider client={queryClient}> wraps the app (Provider Pattern), making the cache available everywhere. useQuery(), useMutation() are custom hooks that read from that provider. The pattern: one Provider at the root, custom hooks for consumption — the same architecture as any well-designed React library.'
+        title: 'TanStack Query — Provider + custom hooks',
+        description: '<QueryClientProvider> wraps the app (Provider Pattern), making the cache available everywhere. useQuery() and useMutation() are custom hooks that read from that provider. One Provider at root, hooks for consumption — the standard React library architecture.'
       }
     ]
   },
 
   prosAndCons: {
     pros: [
-      'HOCs: apply cross-cutting concerns (auth, analytics, theming) across many components without modifying each one.',
-      'Compound Components: the most ergonomic API for grouping related components — as natural to use as HTML\'s <select>/<option>.',
-      'Controlled Components: give consumers of your component complete control over state — enables every conceivable integration.',
-      'Provider Pattern: scales to arbitrarily complex shared state without prop drilling; the foundation of every major React library.'
+      'HOCs apply cross-cutting concerns to many components without modifying each one.',
+      'Compound Components give the most natural, composable API for grouped UI elements.',
+      'Controlled Components give consumers complete state control — enables every possible integration.',
+      'Provider Pattern scales to arbitrarily complex shared state without prop drilling.'
     ],
     cons: [
-      'HOCs: "wrapper hell" — multiple HOCs stacked on a component create deeply nested trees that are hard to debug in DevTools. Custom hooks are usually cleaner.',
-      'Render Props: verbose syntax with nested function calls; replaced by custom hooks for most use cases in modern React.',
-      'Compound Components: more complex to implement than a single-component API; requires careful Context design and accessible keyboard/aria attribute management.',
-      'Controlled Components: require the parent to manage state — more verbose for simple use cases where "just works" would be preferred.'
+      'HOCs: stacking multiple HOCs creates deep wrapper trees that are hard to debug in DevTools.',
+      'Render Props: verbose nested-function syntax — replaced by custom hooks for most cases.',
+      'Compound Components: more complex to build than a single component; needs careful accessibility work.',
+      'Controlled Components: parent must manage state — more verbose for simple use cases.'
     ]
   },
 
   commonMistakes: {
     items: [
       {
-        title: 'Using HOC instead of a custom hook when there\'s no rendering involved',
+        title: 'Using a HOC when a custom hook would be simpler',
         wrong: `// ❌ HOC just to share data-fetching logic — no rendering change needed
 const withUserData = (WrappedComponent) => (props) => {
   const [user, setUser] = useState(null);
@@ -222,82 +222,47 @@ function useUserData() {
   useEffect(() => { fetchUser().then(setUser); }, []);
   return user;
 }`,
-        note: 'If the HOC isn\'t adding any rendering (no conditional return, no wrapper DOM, no additional JSX) — it\'s just sharing logic. Custom hooks do that with zero component overhead and compose better with other hooks.'
+        note: 'If the HOC does not add any rendering — no conditional return, no wrapper DOM — it is just sharing logic. Custom hooks do that with no component overhead and compose better with other hooks.'
       },
       {
-        title: 'Breaking Compound Component implicit contract by rendering children outside the parent',
-        wrong: `// ❌ Using Tabs.Tab without a Tabs parent — Context is null → runtime crash
-<div><Tabs.Tab id="profile">Profile</Tabs.Tab></div>`,
-        right: `// ✅ Add a guard in the subcomponent
-function Tab({ id, children }) {
-  const ctx = useContext(TabContext);
-  if (!ctx) throw new Error('<Tabs.Tab> must be used inside <Tabs>');
-  // ...
-}`,
-        note: 'Always add a null-check guard when consuming a compound component\'s Context. Throw a descriptive error rather than silently rendering incorrectly — this dramatically speeds up debugging for consumers of the library.'
+        title: 'Using a Compound Component subcomponent outside its parent',
+        wrong: `// ❌ Using Tabs.Tab without Tabs — Context is null → runtime crash\n<div><Tabs.Tab id="profile">Profile</Tabs.Tab></div>`,
+        right: `// ✅ Add a guard in the subcomponent\nfunction Tab({ id, children }) {\n  const ctx = useContext(TabContext);\n  if (!ctx) throw new Error('<Tabs.Tab> must be used inside <Tabs>');\n  // ...\n}`,
+        note: 'Always guard Context consumption in compound components. Throw a clear error rather than silently rendering incorrectly — this makes debugging much faster for consumers.'
       },
       {
         title: 'Making a component always uncontrolled when it should support both',
-        wrong: `// ❌ Component uses internal state — consumers can't control it
-function Toggle({ label }) {
-  const [on, setOn] = useState(false); // always uncontrolled
-  return <button onClick={() => setOn(v => !v)}>{label}: {on ? 'on' : 'off'}</button>;
-}`,
-        right: `// ✅ Support both — uncontrolled by default, controlled when value prop provided
-function Toggle({ label, value, onChange, defaultValue = false }) {
-  const [internal, setInternal] = useState(defaultValue);
-  const isControlled = value !== undefined;
-  const on = isControlled ? value : internal;
-  const handleClick = () => {
-    if (!isControlled) setInternal(v => !v);
-    onChange?.(!on);
-  };
-  return <button onClick={handleClick}>{label}: {on ? 'on' : 'off'}</button>;
-}`,
-        note: 'Any reusable component that holds display state should support the controlled/uncontrolled pattern: if the value prop is provided, the component is controlled; otherwise it manages its own state internally. This is the contract that input, select, textarea, and every well-designed React library component follows.'
+        wrong: `// ❌ Component uses only internal state — consumers cannot control it\nfunction Toggle({ label }) {\n  const [on, setOn] = useState(false);\n  return <button onClick={() => setOn(v => !v)}>{label}: {on ? 'on' : 'off'}</button>;\n}`,
+        right: `// ✅ Support both — uncontrolled by default, controlled when value prop provided\nfunction Toggle({ label, value, onChange, defaultValue = false }) {\n  const [internal, setInternal] = useState(defaultValue);\n  const isControlled = value !== undefined;\n  const on = isControlled ? value : internal;\n  const handleClick = () => {\n    if (!isControlled) setInternal(v => !v);\n    onChange?.(!on);\n  };\n  return <button onClick={handleClick}>{label}: {on ? 'on' : 'off'}</button>;\n}`,
+        note: 'Any reusable component that holds display state should support both modes: controlled (value prop provided by parent) and uncontrolled (manages its own state). This is the contract that HTML inputs and every well-designed library component follow.'
       }
     ]
   },
 
   bestPractices: [
-    'Prefer custom hooks over Render Props for logic-sharing — hooks compose better, have cleaner syntax, and show up as named hooks in DevTools.',
-    'Prefer HOCs for behavior that adds rendering (conditional render, loading wrapper) — but name them clearly (withAuth, withErrorBoundary) and keep each HOC single-purpose.',
-    'In Compound Components, always guard Context consumption with a throw if the component is used outside its parent — it produces clear, immediate error messages.',
-    'Support both controlled and uncontrolled modes for any reusable input/display component — defaultValue + value + onChange is the established React contract.',
-    'Memoize Context values in Provider implementations (useMemo + useCallback) — prevents every consumer from re-rendering when an unrelated part of the provider\'s parent re-renders.',
-    'Document the compound component contract — which subcomponents exist, which are optional, and what props they accept. The "dot notation" API is only ergonomic when it\'s discoverable.'
+    'Prefer custom hooks over Render Props for logic sharing — hooks compose better and appear as named hooks in DevTools.',
+    'Use HOCs for behavior that adds rendering (auth check, loading wrapper) — keep each HOC single-purpose with a clear name (withAuth, withErrorBoundary).',
+    'In Compound Components, always throw a clear error when a subcomponent is used outside its parent.',
+    'Support both controlled and uncontrolled modes for any reusable input — defaultValue + value + onChange is the established pattern.',
+    'Memoize Context values in Providers with useMemo and useCallback — prevents consumers re-rendering from unrelated parent updates.',
+    'Document the compound component API — which subcomponents exist, which are optional, and what props they accept.'
   ],
 
   interviewQuestions: [
-    {
-      q: 'What is a Higher-Order Component (HOC) and what problems does it solve?',
-      a: 'A HOC is a function that takes a component and returns a new, enhanced component. It\'s the React implementation of the Decorator design pattern. HOCs solve cross-cutting concerns: applying the same behavior (auth checking, analytics event tracking, feature flag gating, loading/error wrapping) to many different components without modifying each one. The wrapped component knows nothing about the added behavior. Modern React code often uses React Router\'s route-level wrappers and react-error-boundary\'s withErrorBoundary as HOCs, while extracting most logic into custom hooks instead.'
-    },
-    {
-      q: 'What is the Compound Component pattern and when would you use it?',
-      a: 'The Compound Component pattern is when multiple components are designed to work together, sharing implicit state through React Context. The classic example is a Tabs component: <Tabs> provides active tab state through a Context, and <Tabs.Tab> consumes that Context to know which tab is active and trigger changes. This pattern is most appropriate when: multiple subcomponents have a strong conceptual grouping (they\'re always used together), the subcomponents need to share state without prop drilling between siblings, and you want a composable API that lets consumers control the structure (as opposed to a monolithic component with many config props).'
-    },
-    {
-      q: 'What is the difference between controlled and uncontrolled components?',
-      a: 'A controlled component receives its current value via a prop (value) and signals changes via a callback (onChange) — the parent owns the state and passes it down. An uncontrolled component manages its own internal state — the parent can provide an initial value (defaultValue) and optionally a callback (onChange), but the component itself is the source of truth. Controlled gives the parent total visibility and control (enabling things like real-time validation or cross-field dependencies). Uncontrolled is simpler for cases where the parent only needs the value on submission. Well-designed reusable components support BOTH modes.'
-    },
-    {
-      q: 'When would you use Render Props vs. Custom Hooks vs. HOCs?',
-      a: 'Custom Hooks are the default for sharing stateful logic between components — they compose cleanly, are named in DevTools, and work with other hooks. Use them for: API fetching, media queries, subscriptions, debouncing, and virtually any logic-sharing need. Render Props remain useful when a component genuinely needs to delegate "how to render a piece of UI" as a prop — though this is rare in modern code. HOCs are most appropriate when you want to apply a behavior to a component AT THE COMPONENT LEVEL (conditional rendering, wrapping with a boundary) rather than inside its function body — particularly when adding behavior to a component you can\'t or don\'t want to modify. In most modern React, you encounter HOCs in library code but write custom hooks in application code.'
-    },
-    {
-      q: 'How does the Provider Pattern differ from simply prop drilling? What are its trade-offs?',
-      a: 'The Provider Pattern uses React Context to make a value available to any descendant component without passing it through every intermediate component (prop drilling). A <Context.Provider value={...}> at the top makes the value accessible to any descendant that calls useContext(Context), regardless of depth. Trade-offs: it eliminates prop-drilling pain but introduces coupling (any component in the tree can read that Context, which can make data flow harder to trace); and Context updates re-render ALL consuming components (mitigated by memoizing the context value and splitting contexts by update frequency). It\'s appropriate for "global" data (auth, theme, locale) and the internal state of compound component systems.'
-    }
+    { q: 'What is a Higher-Order Component (HOC) and what problems does it solve?', a: 'A HOC is a function that takes a component and returns a new, enhanced component. It implements the Decorator design pattern. HOCs solve cross-cutting concerns — applying the same behavior (auth checking, analytics tracking, feature flag gating) to many components without modifying each one. The wrapped component knows nothing about the added behavior. Modern React often uses HOC-style wrappers (route protection, error boundaries) while extracting most logic into custom hooks.' },
+    { q: 'What is the Compound Component pattern and when do you use it?', a: 'Compound Components are multiple components designed to work together, sharing implicit state through React Context. <Tabs> provides active tab state via Context; <Tabs.Tab> reads that Context to know which tab is active. Use it when: subcomponents have a strong conceptual grouping (always used together), they need to share state without prop drilling between siblings, and you want a composable API that lets consumers control the structure rather than a monolithic config-driven component.' },
+    { q: 'What is the difference between controlled and uncontrolled components?', a: 'A controlled component receives its value via a prop and signals changes via onChange — the parent owns the state. An uncontrolled component manages its own internal state — the parent can give a defaultValue and an optional onChange callback. Controlled gives total visibility and control (real-time validation, cross-field dependencies). Uncontrolled is simpler when the parent only needs the value on submit. Well-designed reusable components support both modes.' },
+    { q: 'When would you use Render Props vs. Custom Hooks vs. HOCs?', a: 'Custom Hooks are the default for sharing stateful logic — they compose cleanly and work with other hooks. Use for API fetching, subscriptions, media queries, and virtually any logic-sharing need. Render Props are useful when a component genuinely needs to delegate rendering as a prop — rare in modern code. HOCs are most appropriate when you want to apply behavior at the component level (conditional rendering, error wrapping) without modifying the component\'s function body. In modern apps, write custom hooks and encounter HOCs in library code.' },
+    { q: 'How does the Provider Pattern differ from prop drilling?', a: 'The Provider Pattern uses React Context to make a value available to any descendant without passing it through every intermediate component. A Context.Provider at the top makes the value accessible to any descendant calling useContext, regardless of depth. Trade-offs: eliminates prop-drilling pain but introduces coupling — any component in the tree can read that Context. Context updates re-render all consumers — mitigated by memoizing the value and splitting contexts by update frequency.' }
   ],
 
   summary: {
-    description: 'Advanced React patterns — HOCs, Render Props, Compound Components, Controlled Components, and the Provider Pattern — are solutions to specific component composition problems that arise at scale. In modern React, custom hooks replace Render Props for logic-sharing, HOCs are most valuable for behavior-adding wrapping (auth, error boundaries), Compound Components power component libraries with natural composable APIs, and the Provider Pattern (Context + hooks) is the foundation of virtually every major React library. Know all of them; default to custom hooks for logic; reach for the others when their specific strengths apply.'
+    description: 'Advanced React patterns — HOCs, Render Props, Compound Components, Controlled Components, and the Provider Pattern — solve specific composition problems at scale. In modern React, custom hooks replace Render Props for logic sharing, HOCs add rendering-level behavior, Compound Components give natural APIs for component libraries, and the Provider Pattern powers virtually every major React library. Know all of them; default to custom hooks for logic; reach for the others when their specific strengths apply.'
   },
 
   furtherReading: [
-    { label: 'Official docs', note: 'react.dev/learn/passing-data-deeply-with-context and react.dev/learn/reusing-logic-with-custom-hooks — the two canonical references for modern React composition.' },
-    { label: 'Related topics', note: 'See "Custom Hooks" for the hook-based alternative to Render Props, "Context API" for the Provider Pattern deep-dive, "Performance Optimization" for memoizing Context values, and "Component Composition" in Foundations for the basics of the children prop and composition.' }
+    { label: 'Official docs', note: 'react.dev/learn/passing-data-deeply-with-context and react.dev/learn/reusing-logic-with-custom-hooks — canonical references for modern React composition.' },
+    { label: 'Related topics', note: 'See "Custom Hooks" for the hook-based alternative to Render Props, "Context API" for the Provider Pattern deep-dive, "Performance Optimization" for memoizing Context values.' }
   ]
 };
 

@@ -3,21 +3,21 @@ const authenticationContent = {
   title: 'Authentication in React',
   icon: '🔐',
   theme: 'rose',
-  tagline: 'Manage login/logout, token storage, protected routes, and auth state in React applications.',
+  tagline: 'Manage login, logout, token storage, and protected routes in your React app.',
   meta: 'Ecosystem · Security',
 
   whatIsIt: {
     description: [
-      'Authentication in React is the pattern of: (1) verifying who the user is (login), (2) persisting that identity across page reloads (token/session storage), (3) making that identity available throughout the component tree (auth context), and (4) protecting routes/components from unauthenticated access.',
-      'React itself provides no auth primitives — authentication is built from existing React patterns (Context, Hooks, React Router) combined with your backend\'s auth strategy (JWTs, sessions, OAuth).'
+      'Authentication in React means: checking who the user is (login), keeping that identity across page reloads (token storage), sharing it across the app (Context), and blocking unauthenticated users from private pages (protected routes).',
+      'React has no built-in auth — you build it using Context, hooks, and React Router, combined with your backend\'s auth strategy (JWTs, sessions, or OAuth).'
     ],
     points: [
-      'Three token storage options — each with trade-offs: (a) Memory (most secure, lost on refresh), (b) HttpOnly cookies (secure from XSS, requires CORS setup), (c) localStorage/sessionStorage (convenient, XSS-vulnerable — generally avoid for sensitive tokens).',
-      'Auth Context: a provider holding user identity + login/logout functions, consumed via useAuth() hook.',
-      'Protected Routes: components that redirect unauthenticated users to /login before rendering.',
-      'Token refresh: intercepting 401 responses, refreshing the access token silently, and retrying the original request.'
+      'Auth Context: holds user info, login, and logout functions — available everywhere via useAuth().',
+      'Protected Routes: redirect users to /login if they are not logged in.',
+      'Token storage options: memory (safest), HttpOnly cookies (safe from XSS), or localStorage (avoid for sensitive tokens).',
+      'Token refresh: silently get a new access token when the old one expires — user never sees a logout.'
     ],
-    code: { title: 'Complete auth context + protected routes pattern', snippet: `// authContext.js
+    code: { title: 'Auth context + protected route pattern', snippet: `// authContext.js
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
@@ -67,39 +67,39 @@ function ProtectedRoute({ children }) {
     analogy: {
       icon: '🏢',
       title: 'Real-World Analogy',
-      text: '"Authentication in a React app is like entering an office building. At the front desk (login page), you show your credentials and receive a badge (token). The badge is stored somewhere — in your pocket (memory), on a lanyard visible to everyone (localStorage, risky), or embedded in your keycard that security controls (HttpOnly cookie, most secure). When you approach a restricted floor (protected route), the floor scanner reads your badge and either lets you in or directs you back to the lobby (redirect to login). The badge expires (token expiry) and needs periodic renewal (token refresh)."'
+      text: '"Authentication is like entering an office building. At the front desk (login page), you show your ID and get a badge (token). You keep the badge somewhere — in your pocket (memory), on a visible lanyard (localStorage — risky), or in a secure keycard system (HttpOnly cookie — safest). A restricted floor (protected route) checks your badge. When the badge expires, security silently renews it (token refresh)."'
     }
   },
 
   whyUsed: {
-    description: 'Almost every real-world app has user accounts and access control. React apps need a consistent, secure pattern for auth state that handles all the edge cases: persisting login across reloads, protecting routes, handling token expiry, and logging out properly.',
+    description: 'Almost every real app has user accounts. You need one consistent, secure place for auth state — not scattered "is the user logged in?" checks in every component.',
     points: [
-      'Centralizing auth state in Context prevents every component from needing its own "is user logged in?" logic.',
-      'Protected routes enforce access control at the routing level — one place to gatekeep, not scattered conditionals.',
-      'Token storage choice directly impacts security — XSS-vulnerable apps with localStorage-stored tokens are a common attack vector.',
-      'Proper token refresh UX prevents frustrating "suddenly logged out" experiences when access tokens expire.'
+      'One Auth Context prevents duplicate auth-check logic in every component.',
+      'Protected routes enforce access control in one place — not scattered conditionals.',
+      'Token storage choice directly impacts security — localStorage tokens can be stolen via XSS.',
+      'Proper token refresh stops users from being suddenly "logged out" when tokens expire.'
     ]
   },
 
   whenToUse: {
-    description: 'Any app with user accounts, access control, or personalization needs an auth pattern.',
+    description: 'Any app with user accounts, private pages, or different user roles needs an auth pattern.',
     points: [
-      'Login/register/logout flows with backend authentication.',
-      'Route-level access control: authenticated vs. unauthenticated areas.',
-      'Role-based access: admin vs. regular user, showing/hiding features.',
-      'OAuth / Social login: integrating Google/GitHub login via libraries like Auth0, NextAuth.js, Clerk, or Firebase Auth.'
+      'Login, register, and logout flows with a backend.',
+      'Route-level access control — authenticated vs. unauthenticated areas.',
+      'Role-based access: admin vs. regular user.',
+      'Social login (Google, GitHub): use a library like Auth0, Clerk, or NextAuth.js.'
     ],
     analogy: {
       icon: '💡',
-      title: 'The "loading" state that prevents flashing',
-      text: '"A critical UX detail: on page load, your app doesn\'t immediately know if the user is logged in — it has to check (verify the session, call /api/me). During this brief \'status === loading\' moment, protected routes must show a spinner — not flash the login page. Without this check, even legitimate logged-in users briefly see the login page on reload, which looks broken and erodes trust."'
+      title: 'The loading state that prevents flashing',
+      text: '"On page load, your app does not immediately know if the user is logged in — it must check with the server first. During this short loading moment, protected routes must show a spinner — not the login page. Without this, even logged-in users briefly see the login page on refresh, which looks broken."'
     }
   },
 
   howItWorks: {
-    description: 'The standard React auth flow: Provider wraps the app → verifies existing session on mount → exposes user+login+logout → ProtectedRoute checks user before rendering → Axios/fetch interceptors handle token refresh automatically.',
+    description: 'The standard flow: AuthProvider checks the session on mount, exposes user + login + logout, ProtectedRoute reads auth status, and Axios interceptors handle token refresh automatically so the user never notices.',
     code: {
-      title: 'Axios interceptors for automatic token injection + refresh',
+      title: 'Axios interceptors for token injection and auto-refresh',
       snippet: `// axiosInstance.js
 import axios from 'axios';
 
@@ -137,9 +137,9 @@ api.interceptors.response.use(null, async (error) => {
 
 export default api;` },
     points: [
-      'Short-lived access tokens (15-60 min) stored in memory + long-lived refresh tokens in HttpOnly cookies is the gold-standard security approach.',
-      'OAuth / social login libraries (Auth0, Clerk, NextAuth.js) handle all of this complexity — worth considering for any app with social login or complex auth requirements.',
-      'RBAC (role-based access control): store user.roles in auth context, check roles in ProtectedRoute or conditionally in components.'
+      'Best security: short-lived access tokens in memory + long-lived refresh tokens in HttpOnly cookies.',
+      'Auth libraries (Auth0, Clerk, NextAuth.js) handle all token complexity — worth using for social login or complex flows.',
+      'Role-based access: store user.roles in auth context, check roles in ProtectedRoute or conditionally in components.'
     ]
   },
 
@@ -156,27 +156,27 @@ export default api;` },
   },
 
   realWorldExamples: {
-    intro: 'Auth architecture is one of the most consequential decisions in a React app:',
+    intro: 'Auth is one of the most important decisions in a React app:',
     items: [
-      { icon: '🔑', title: 'JWT with HttpOnly cookies', description: 'Server sets the JWT in an HttpOnly, SameSite=Strict cookie — unreachable by JavaScript, immune to XSS. Frontend uses withCredentials: true in fetch/Axios. Refresh tokens extend the session silently.' },
-      { icon: '🌐', title: 'OAuth/social login with a library', description: 'Clerk, Auth0, or NextAuth.js handle the OAuth flow, token storage, and session management — you get a useUser() / useAuth() hook and pre-built login UI. Saves weeks of implementation.' },
-      { icon: '🛡️', title: 'Role-based protected routes', description: '<ProtectedRoute requiredRole="admin"> checks user.roles before rendering admin pages — unauthenticated users → /login; insufficient role → /unauthorized.' },
-      { icon: '📱', title: 'Persistent sessions via refresh tokens', description: 'Access tokens in memory (refreshed silently every 15 min via a long-lived HttpOnly refresh token cookie) — the user stays logged in across browser sessions without storing sensitive tokens in localStorage.' }
+      { icon: '🔑', title: 'JWT with HttpOnly cookies', description: 'Server sets the JWT in an HttpOnly, SameSite=Strict cookie — JavaScript cannot read it, so XSS attacks cannot steal it. Use withCredentials: true in fetch/Axios.' },
+      { icon: '🌐', title: 'Social login with a library', description: 'Clerk, Auth0, or NextAuth.js handle OAuth flows, token storage, and session management. You get a useAuth() hook and pre-built login UI — saves weeks of work.' },
+      { icon: '🛡️', title: 'Role-based protected routes', description: '<ProtectedRoute requiredRole="admin"> checks user.roles before rendering. Unauthenticated → /login; wrong role → /unauthorized.' },
+      { icon: '📱', title: 'Persistent sessions', description: 'Access tokens in memory refreshed every 15 minutes via a long-lived HttpOnly refresh cookie — users stay logged in without storing sensitive tokens in localStorage.' }
     ]
   },
 
   prosAndCons: {
     pros: [
-      'Centralized auth Context makes the user\'s identity consistently available across the entire app.',
-      'React Router protected routes provide a clean, maintainable single gatekeeping point.',
-      'HttpOnly cookie + token refresh pattern is the most secure available approach for SPAs.',
-      'Auth libraries (Auth0, Clerk) dramatically reduce implementation time and security risk for OAuth flows.'
+      'Auth Context makes the user\'s identity available everywhere consistently.',
+      'Protected routes provide a clean, single gatekeeping point.',
+      'HttpOnly cookies + token refresh is the most secure approach for SPAs.',
+      'Auth libraries dramatically reduce implementation time for OAuth flows.'
     ],
     cons: [
-      'Token management, refresh logic, and interceptors add meaningful complexity — auth libraries exist for a reason.',
-      'localStorage token storage (a common shortcut) creates real XSS vulnerability — resist the temptation.',
-      'Session persistence across tabs with in-memory token storage requires additional coordination (BroadcastChannel, service worker).',
-      'CORS, SameSite cookie settings, and HTTPS requirements add configuration overhead, especially in development.'
+      'Token management and refresh logic add complexity — auth libraries exist for this reason.',
+      'localStorage tokens (a common shortcut) are XSS-vulnerable — avoid for sensitive tokens.',
+      'In-memory tokens are lost on page refresh — mitigated by refresh tokens.',
+      'CORS and cookie settings add configuration overhead in development.'
     ]
   },
 
@@ -184,46 +184,46 @@ export default api;` },
     items: [
       {
         title: 'Storing JWT access tokens in localStorage',
-        wrong: `localStorage.setItem('token', jwt); // ❌ XSS-vulnerable — any injected script can steal the token`,
-        right: `// ✅ Store in memory (most secure) or let the server use HttpOnly cookies\n// In memory: tokenStore.setToken(jwt) → only lives in the JS closure, not accessible from DOM`,
-        note: 'localStorage is accessible from any JavaScript on the page — including malicious scripts injected via XSS. A stolen JWT is a stolen session. HttpOnly cookies are inaccessible from JavaScript regardless of XSS, making them the secure choice. In-memory storage is also safe but requires token refresh on every page load.'
+        wrong: `localStorage.setItem('token', jwt); // ❌ any XSS attack can steal this token`,
+        right: `// ✅ Store in memory (safest) or let the server use HttpOnly cookies\n// In memory: tokenStore.setToken(jwt) — only lives in the JS closure`,
+        note: 'localStorage is accessible to any JavaScript on the page — including scripts injected by XSS attacks. HttpOnly cookies are inaccessible from JavaScript regardless of XSS, making them the secure choice.'
       },
       {
         title: 'Not handling the "loading" auth status',
-        wrong: `function ProtectedRoute({ children }) {\n  const { user } = useAuth();\n  if (!user) return <Navigate to="/login" />; // ❌ shows login page BRIEFLY even when user is logged in\n  return children;\n}`,
+        wrong: `function ProtectedRoute({ children }) {\n  const { user } = useAuth();\n  if (!user) return <Navigate to="/login" />; // ❌ flashes login page for logged-in users\n  return children;\n}`,
         right: `function ProtectedRoute({ children }) {\n  const { user, status } = useAuth();\n  if (status === 'loading') return <Spinner />;    // wait for the session check\n  if (!user) return <Navigate to="/login" replace />;\n  return children;\n}`,
-        note: 'On initial load, auth state is unknown until the backend session-check resolves. Showing a redirect before that check completes briefly flashes the login page for authenticated users — a jarring experience. The "loading" status prevents this.'
+        note: 'On page load, auth state is unknown until the session check finishes. Redirecting before that check runs briefly shows the login page to logged-in users — jarring and confusing.'
       },
       {
-        title: 'Forgetting to call logout on token refresh failure',
-        note: 'If the refresh token has expired or been invalidated (user deleted, password changed, token revoked), the refresh request returns a 401. Your interceptor must handle this case: clear all auth state, redirect to /login, and inform the user their session has expired. Silently ignoring refresh failure leaves the app in a broken authenticated-but-rejected limbo.'
+        title: 'Forgetting to logout on token refresh failure',
+        note: 'If the refresh token expires or is revoked, the refresh request fails. Your interceptor must catch this, clear all auth state, and redirect to the login page. Without this, the app looks logged in but every API call fails.'
       }
     ]
   },
 
   bestPractices: [
-    'Use HttpOnly, SameSite=Strict cookies for refresh tokens — never store refresh tokens in JavaScript-accessible storage.',
-    'Store access tokens in memory (a JS closure/module variable) — they\'re short-lived and don\'t need to survive page reloads.',
-    'Always check the "loading" auth status in protected routes to prevent the authenticated→login page flash on initial load.',
-    'Use Axios interceptors (or a fetch wrapper) to automatically inject tokens and handle 401 refresh — don\'t scatter this logic across components.',
-    'For OAuth / social login, reach for a library (Auth0, Clerk, NextAuth.js) — the security complexity is not worth hand-rolling.'
+    'Use HttpOnly, SameSite=Strict cookies for refresh tokens — never store them in JavaScript-accessible storage.',
+    'Store access tokens in memory — they are short-lived and do not need to survive page reloads.',
+    'Always check the "loading" status in protected routes to prevent the login-page flash on initial load.',
+    'Use Axios interceptors to inject tokens and handle 401 refresh — do not scatter this logic across components.',
+    'For OAuth and social login, use a library (Auth0, Clerk, NextAuth.js) — the security complexity is not worth building from scratch.'
   ],
 
   interviewQuestions: [
-    { q: 'Where should JWT access tokens be stored in a React SPA, and why?', a: 'In memory (a JavaScript module variable or closure), NOT in localStorage or sessionStorage. localStorage is accessible to any JavaScript on the page — an XSS attack can read and exfiltrate tokens stored there. In-memory storage is only accessible within the current JS execution context, making it immune to XSS-based token theft. The tradeoff is tokens are lost on page refresh — mitigated by refresh tokens stored in HttpOnly cookies (server-managed, JavaScript-inaccessible).' },
-    { q: 'How do you implement a protected route in React Router?', a: 'Create a ProtectedRoute wrapper component that reads the current auth status from useAuth(). If status is still loading (the session check is in progress), show a spinner — not a redirect — to prevent flashing the login page for legitimately authenticated users. If the user is null after loading, render <Navigate to="/login" replace />. Otherwise render the children. Wrap any sensitive route: <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />.' },
-    { q: 'How does the access token + refresh token pattern work for session persistence?', a: 'Short-lived access tokens (15-60 min) are used for API requests. When one expires (401 response), an interceptor automatically calls a token-refresh endpoint, which uses a long-lived refresh token stored in an HttpOnly cookie. The server validates the refresh token, issues a new access token, and the interceptor retries the original request — all transparently. The user never sees a login prompt unless the refresh token itself has expired.' },
-    { q: 'What happens in your auth flow when the refresh token expires?', a: 'The refresh request itself returns an error. The response interceptor catches this, clears all auth state (user, in-memory access token), and redirects to the login page — optionally showing a message like "Your session has expired, please log in again." Without this handling, the app enters a broken state where the user appears logged in but every API request fails with 401.' },
-    { q: 'When would you use Auth0, Clerk, or NextAuth.js instead of building auth yourself?', a: 'Whenever you need: OAuth/social login (Google, GitHub, Apple), multi-factor authentication, magic links, SAML/enterprise SSO, or any complex auth flow. These libraries handle all the OAuth redirect flows, token management, session persistence, and security best practices — implementing them correctly yourself takes weeks and requires significant security expertise. Even for simple username/password auth, libraries like Auth0 offload PBKDF2 password hashing, brute-force protection, and compliance obligations. The only reason to build from scratch is very specific requirements that no library can accommodate.' }
+    { q: 'Where should JWT access tokens be stored in a React SPA, and why?', a: 'In memory (a JavaScript module variable), not in localStorage. localStorage is accessible to any JavaScript on the page — an XSS attack can read and steal tokens stored there. In-memory storage is only accessible within the current JS execution context, immune to XSS-based theft. The tradeoff is tokens are lost on page refresh — solved by refresh tokens stored in HttpOnly cookies.' },
+    { q: 'How do you implement a protected route in React Router?', a: 'Create a ProtectedRoute component that reads auth status from useAuth(). If still loading, show a spinner — not a redirect — to prevent flashing the login page for logged-in users. If user is null after loading, render <Navigate to="/login" replace />. Otherwise render children. Wrap sensitive routes: <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />.' },
+    { q: 'How does the access token + refresh token pattern work?', a: 'Short-lived access tokens (15-60 min) are used for API requests. When one expires (401), an interceptor calls a refresh endpoint, which uses a long-lived HttpOnly refresh cookie. The server issues a new access token and the interceptor retries the original request — all transparently. The user only sees the login page if the refresh token itself has expired.' },
+    { q: 'What happens when the refresh token expires?', a: 'The refresh request returns an error. The interceptor clears all auth state, redirects to the login page, and optionally shows "your session expired, please log in again." Without this, the app appears logged in but every API call fails with 401.' },
+    { q: 'When would you use Auth0, Clerk, or NextAuth.js instead of building auth yourself?', a: 'When you need OAuth/social login, MFA, magic links, or SSO. These libraries handle OAuth flows, token management, and security best practices — implementing them correctly takes weeks. Even for simple email/password auth, libraries handle password hashing, brute-force protection, and compliance. Build from scratch only when you have requirements no library can meet.' }
   ],
 
   summary: {
-    description: 'Authentication in React is built from familiar patterns: an AuthContext Provider holding user state + login/logout, useAuth() for consumption, ProtectedRoute for access control, and Axios interceptors for token injection and refresh. Security comes from storage decisions: HttpOnly cookies for refresh tokens, in-memory for access tokens — never localStorage. For OAuth and social login, libraries like Clerk, Auth0, or NextAuth.js make the right choice the easy choice.'
+    description: 'Authentication in React uses familiar patterns: an AuthContext Provider with user state + login/logout, useAuth() for consumption, ProtectedRoute for access control, and Axios interceptors for token injection and refresh. Security comes from storage choices: HttpOnly cookies for refresh tokens, memory for access tokens — never localStorage. For OAuth and social login, use Clerk, Auth0, or NextAuth.js.'
   },
 
   furtherReading: [
-    { label: 'Related topic', note: 'See "React Router" for the route-protection pattern, "API Integration" for the Axios interceptor setup, and "Context API" for the auth context pattern.' },
-    { label: 'Libraries', note: 'Clerk (clerk.com), Auth0 (auth0.com), and NextAuth.js (next-auth.js.org) — production-ready auth solutions for React apps at different complexity levels.' }
+    { label: 'Related topics', note: 'See "React Router" for the route-protection pattern, "API Integration" for Axios interceptors, and "Context API" for the auth context pattern.' },
+    { label: 'Libraries', note: 'Clerk (clerk.com), Auth0 (auth0.com), NextAuth.js (next-auth.js.org) — production auth for React apps at different complexity levels.' }
   ]
 };
 

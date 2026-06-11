@@ -3,54 +3,54 @@ const introduction = {
   title: 'Introduction to React',
   icon: '⚛️',
   theme: 'sky',
-  tagline: 'A JavaScript library for building fast, interactive user interfaces out of small reusable pieces called components.',
+  tagline: 'React is a JavaScript library for building user interfaces.',
   meta: 'Foundations · Start here',
 
   whatIsIt: {
     description: [
-      'React is an open-source JavaScript library (created by Facebook/Meta) used to build user interfaces — especially single-page applications where data changes over time without reloading the page.',
-      'Instead of writing one giant HTML page, you break the UI into small, independent, reusable pieces called "components". React then takes care of efficiently updating the screen whenever your data (state) changes.'
+      'React is a JavaScript library created by Facebook. It is used to build the visible parts of a website — what the user sees on screen.',
+      'You break your UI into small, reusable pieces called components. When your data changes, React automatically updates the screen.'
     ],
     points: [
-      'A library (not a full framework) focused purely on the "view" layer — what the user sees.',
-      'Lets you describe *what* the UI should look like for a given state, and React figures out *how* to update the DOM to match.',
-      'Built around components, JSX, props, state and a virtual DOM diffing algorithm.'
+      'React is a library — not a full framework.',
+      'You describe what the UI should look like. React handles all DOM updates.',
+      'React uses components, JSX, props, and state.'
     ],
     analogy: {
       icon: '🧱',
-      title: 'Real-World Analogy',
-      text: '"Think of React like LEGO bricks. Instead of carving one giant statue (a traditional HTML page), you build small reusable bricks (components) — a button brick, a card brick, a navbar brick — and snap them together to build anything from a small toy to a massive castle (your app)."'
+      title: 'Think of it like LEGO',
+      text: '"React is like LEGO bricks. You make small reusable bricks (components) — a button, a card, a navbar — and snap them together to build your app."'
     }
   },
 
   whyUsed: {
-    description: 'Before React, updating a web page meant manually finding DOM elements and mutating them — slow, error-prone, and hard to scale as an app grows. React solves this by letting you just describe your UI as a function of your data.',
+    description: 'Before React, updating a web page meant manually finding and changing HTML elements. That was slow and hard to manage. React makes it easy.',
     points: [
-      'Declarative: you say "show this when state is X" — React handles the DOM updates for you.',
-      'Component-based: UI is split into independent, reusable, testable pieces.',
-      'Virtual DOM: React calculates the minimal set of real DOM changes needed, making updates fast.',
-      'Huge ecosystem: routing, state management, styling, testing — there is a mature tool for everything.',
-      'One codebase, many platforms: React Native lets you reuse React skills/concepts to build mobile apps.'
+      'Declarative: you say what to show — React does the update.',
+      'Component-based: build once, reuse everywhere.',
+      'Fast: React only updates the parts that changed.',
+      'Huge community: there is a library for almost everything.',
+      'React Native: use the same skills to build mobile apps too.'
     ]
   },
 
   whenToUse: {
-    description: 'Reach for React when your UI is dynamic, data-driven, or interactive — not for a static brochure page that never changes.',
+    description: 'Use React when your page is interactive — when data changes based on what the user does.',
     points: [
-      'Single-page applications (dashboards, admin panels, social feeds, e-commerce sites).',
-      'Apps where the UI must update instantly in response to user actions or live data (chat apps, stock tickers, notifications).',
-      'Projects that will grow large and need a maintainable, component-based structure.',
-      'Teams that want a huge hiring pool, mature tooling, and long-term community support.'
+      'Dashboards, social feeds, e-commerce sites.',
+      'Apps where the UI must update instantly (chat, notifications).',
+      'Projects that will grow large and need organized code.',
+      'Teams that want a big community and long-term support.'
     ]
   },
 
   howItWorks: {
-    description: 'React keeps an in-memory representation of the UI called the Virtual DOM. When your state changes, React re-renders the affected components in memory, compares ("diffs") the new virtual tree with the previous one, and applies only the minimal real-DOM updates needed.',
+    description: 'React keeps a copy of your UI in memory called the Virtual DOM. When data changes, it compares the old and new versions and only updates what changed in the real browser.',
     steps: [
-      'You describe the UI with components and JSX: "render this markup for this data".',
-      'When state/props change, React re-runs the component function to get a new virtual tree.',
-      'React diffs the new tree against the previous one (reconciliation).',
-      'React commits only the changed parts to the real browser DOM — fast and efficient.'
+      'You write components and JSX to describe the UI.',
+      'When state or props change, React re-runs the component.',
+      'React compares the new UI with the old one.',
+      'React updates only the parts that actually changed.'
     ],
     code: {
       title: 'Your first React component',
@@ -64,8 +64,8 @@ const introduction = {
     },
     analogy: {
       icon: '🎬',
-      title: 'Real-World Analogy',
-      text: '"React is like a smart film editor. You hand it the new script (new state), and instead of re-shooting the whole movie, it compares the new script to the old one and only re-shoots the scenes that actually changed."'
+      title: 'Smart film editor',
+      text: '"React is like a smart editor. Instead of re-shooting the whole movie, it only re-shoots the scenes that actually changed."'
     }
   },
 
@@ -81,76 +81,75 @@ const introduction = {
   },
 
   realWorldExamples: {
-    intro: 'React powers many of the apps you already use every day:',
+    intro: 'React powers many of the apps you use every day:',
     items: [
-      { icon: '📘', title: 'Facebook & Instagram', description: 'News feeds that update live as you scroll, like, and comment — all without reloading the page.' },
-      { icon: '🎬', title: 'Netflix', description: 'Browsing rows of movies, hovering for previews, and instant page transitions are powered by component-based UIs.' },
-      { icon: '🛒', title: 'E-commerce dashboards', description: 'Product listings, carts, filters and checkout flows that react instantly to user input.' },
-      { icon: '💬', title: 'Real-time chat apps', description: 'Messages appear instantly and the UI updates as new data streams in over WebSockets.' }
+      { icon: '📘', title: 'Facebook & Instagram', description: 'Feeds that update live as you scroll and like — no page reload needed.' },
+      { icon: '🎬', title: 'Netflix', description: 'Browsing movies and instant page transitions are built with React components.' },
+      { icon: '🛒', title: 'E-commerce sites', description: 'Product listings, carts, and filters that update instantly when you interact.' },
+      { icon: '💬', title: 'Chat apps', description: 'Messages appear in real time as new data arrives.' }
     ]
   },
 
   prosAndCons: {
     pros: [
-      'Component reusability dramatically speeds up development.',
-      'Virtual DOM makes UI updates fast and efficient.',
-      'Massive ecosystem and community — answers to almost any problem already exist.',
-      'Backed by Meta and used at enormous scale — battle-tested in production.',
-      'Easy to learn the basics; JSX feels natural once you know HTML/JS.'
+      'Reuse components — write once, use many times.',
+      'Fast updates — React only changes what needs to change.',
+      'Huge community — answers and libraries for everything.',
+      'Easy to learn the basics if you know HTML and JavaScript.'
     ],
     cons: [
-      'It is "just a library" — you must choose your own router, state manager, form library, etc.',
-      'JSX and the build tooling (bundlers, transpilers) add a learning curve for absolute beginners.',
-      'Fast pace of change in the ecosystem can feel overwhelming ("framework fatigue").',
-      'SEO and first-paint performance need extra work (SSR/SSG via Next.js, etc.) for content-heavy sites.'
+      'It is just a library — you need to pick your own router and state manager.',
+      'JSX and build tools take some time to learn for beginners.',
+      'The ecosystem changes fast — can feel overwhelming at first.',
+      'SEO and first-load speed need extra work (like Next.js).'
     ]
   },
 
   commonMistakes: {
     items: [
       {
-        title: 'Treating React like a full framework',
-        note: 'React only handles the view layer. Beginners often expect routing, HTTP requests, or global state to come "built in" — they don\'t. You add libraries like React Router, Axios/fetch, and Redux/Zustand/Context as needed.'
+        title: 'Thinking React handles everything',
+        note: 'React only handles the view layer. Routing, API calls, and global state need separate libraries like React Router, fetch, and Redux/Context.'
       },
       {
-        title: 'Manipulating the DOM directly',
+        title: 'Changing the DOM directly',
         wrong: `// ❌ Fighting React by reaching into the DOM
 document.getElementById('title').innerText = 'New Title';`,
         right: `// ✅ Let state drive the UI — React updates the DOM for you
 const [title, setTitle] = useState('Old Title');
 return <h1>{title}</h1>;`,
-        note: 'Direct DOM manipulation conflicts with React\'s rendering model and causes hard-to-debug inconsistencies.'
+        note: 'Never manually touch the DOM in React. Let state and JSX control what shows on screen.'
       }
     ]
   },
 
   bestPractices: [
-    'Start by sketching your UI as a tree of components before writing code.',
-    'Keep components small and focused on one responsibility ("single responsibility principle").',
-    'Let state drive the UI — never manually touch the DOM in a React app.',
-    'Use the official docs (react.dev) and React DevTools from day one to understand what is rendering and why.',
-    'Learn modern JavaScript (ES6+: arrow functions, destructuring, spread/rest, modules) alongside React — React leans on it heavily.'
+    'Draw your UI as a tree of components before writing code.',
+    'Keep each component small — it should do one thing only.',
+    'Never touch the DOM directly. Use state instead.',
+    'Use React DevTools to see what is rendering and why.',
+    'Learn modern JavaScript (ES6+) alongside React.'
   ],
 
   interviewQuestions: [
-    { q: 'What is React and why was it created?', a: 'React is a JavaScript library for building user interfaces by composing small, reusable components. It was created at Facebook to solve the problem of keeping complex, frequently-changing UIs in sync with underlying data efficiently and predictably.' },
-    { q: 'Is React a framework or a library? What is the difference for you as a developer?', a: 'React is a library focused on the view layer. Unlike a full framework (e.g. Angular), it does not dictate how you handle routing, HTTP requests or state management — you choose and combine those tools yourself, which gives flexibility but requires more upfront decisions.' },
-    { q: 'What problem does the Virtual DOM solve?', a: 'Directly mutating the real DOM is slow because it triggers layout/paint work. The Virtual DOM lets React compute the minimal set of real changes in memory first (diffing), then apply just those changes — making UI updates much faster.' },
-    { q: 'What does "declarative UI" mean, and how is it different from "imperative"?', a: 'Declarative means you describe *what* the UI should look like for a given state ("show a spinner while loading"), and the library figures out *how* to make the DOM match. Imperative means you write step-by-step instructions to manually change the DOM yourself.' }
+    { q: 'What is React and why was it created?', a: 'React is a JavaScript library for building user interfaces. Facebook created it to manage complex, frequently-changing UIs. It uses small reusable components to keep the UI in sync with data.' },
+    { q: 'Is React a framework or a library?', a: 'React is a library. It only handles the view layer. You choose your own tools for routing, HTTP calls, and state management. A full framework like Angular includes all of these.' },
+    { q: 'What problem does the Virtual DOM solve?', a: 'Changing the real DOM directly is slow. The Virtual DOM lets React calculate the minimum changes needed in memory first, then apply only those to the real DOM — making updates much faster.' },
+    { q: 'What does "declarative UI" mean?', a: 'Declarative means you describe what the UI should look like for a given state. React figures out how to update the DOM. The opposite — imperative — means you write step-by-step instructions to manually change the DOM yourself.' }
   ],
 
   summary: {
-    description: 'React lets you build UIs by composing small, reusable components, describing what the screen should look like for any given state — and letting React efficiently handle updating the real DOM. Master components, JSX, props and state, and the rest of the ecosystem (hooks, routing, performance) builds naturally on top.',
+    description: 'React lets you build UIs with small, reusable components. You describe what the screen should show for any given data, and React handles updating the DOM efficiently. Learn components, JSX, props, and state first — everything else builds on top of these basics.',
     analogy: {
       icon: '🚦',
-      title: 'Real-World Analogy',
-      text: '"Learning React is like learning to drive: components/JSX/props/state are the steering wheel and pedals — the fundamentals you must master first. Hooks, routing, and performance optimization are like learning to merge onto highways and parallel park — advanced skills that build on the basics."'
+      title: 'Learning React',
+      text: '"Learning React is like learning to drive. Components, JSX, props, and state are the steering wheel and pedals — master these first. Hooks, routing, and performance are the advanced skills you learn later."'
     }
   },
 
   furtherReading: [
-    { label: 'Official docs', note: 'react.dev/learn — the canonical, up-to-date guide this app is structured to complement.' },
-    { label: 'React reference', note: 'react.dev/reference/react — full API reference for every hook and API mentioned across this app.' }
+    { label: 'Official docs', note: 'react.dev/learn — the official guide to React, updated for React 18+.' },
+    { label: 'React reference', note: 'react.dev/reference/react — full reference for every hook and API.' }
   ]
 };
 

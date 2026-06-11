@@ -3,18 +3,18 @@ const useReducerContent = {
   title: 'useReducer Hook',
   icon: '🔇',
   theme: 'rose',
-  tagline: 'Manage complex, multi-part state through clear, predictable "actions" — useState\'s big sibling for tricky state logic.',
+  tagline: 'useReducer helps you manage complex state using a single, predictable function.',
   meta: 'Hooks · Core',
 
   whatIsIt: {
     description: [
-      'useReducer is a Hook for managing state via a "reducer" function — a pure function that takes the current state and an action object describing "what happened", and returns the *new* state. It\'s the same pattern Redux popularized, built right into React.',
-      'It returns [state, dispatch]: the current state, and a `dispatch` function you call with an action to request a state change — the reducer decides exactly how that action transforms the state.'
+      'useReducer manages state through a "reducer" — a pure function that takes the current state and an action, and returns the new state.',
+      'It returns [state, dispatch]: the current state, and a dispatch function you call with an action to request a state change.'
     ],
     points: [
       'Syntax: const [state, dispatch] = useReducer(reducer, initialState);',
-      'A reducer is a pure function: (state, action) => newState — same inputs always produce the same output, no side effects.',
-      'Actions are typically plain objects with a `type` (and optional payload): { type: \'increment\' }, { type: \'add_todo\', text: \'Buy milk\' }.'
+      'A reducer is a pure function: (state, action) => newState.',
+      'Actions are plain objects with a type: { type: "increment" } or { type: "add_todo", text: "Buy milk" }.'
     ],
     code: { title: 'The basic shape', snippet: `function reducer(state, action) {
   switch (action.type) {
@@ -32,37 +32,37 @@ dispatch({ type: 'increment' }); // describes WHAT happened, not HOW to change s
     analogy: {
       icon: '🏛️',
       title: 'Real-World Analogy',
-      text: '"useReducer is like a courtroom. Instead of everyone in the building (your components) directly rewriting the law (mutating state) however they please, they file a formal request — a petition describing what they want (an action) — to a single judge (the reducer). The judge reviews the current law (current state) and the petition, and issues one official, predictable ruling (the new state). Everyone always goes through the same process, so the outcome is consistent and traceable."'
+      text: '"useReducer is like a courtroom. Instead of everyone directly rewriting the law (mutating state), they file a formal request (an action) to a judge (the reducer). The judge reviews the current law (state) and the request, then issues one official ruling (the new state). Every change goes through the same process."'
     }
   },
 
   whyUsed: {
-    description: 'When state has multiple sub-values that change together, or the "next state" depends on complex logic about *what kind* of update is happening, scattering many useState calls and ad-hoc update functions becomes hard to follow and easy to get subtly wrong. useReducer centralizes that logic into one well-tested, predictable function.',
+    description: 'When state has multiple parts that change together, or the next state depends on complex logic, scattered useState calls become hard to follow. useReducer puts all that logic in one place.',
     points: [
-      'Centralizes all state-transition logic in one place (the reducer) — easy to find, read, test, and reason about.',
-      'Makes state changes explicit and traceable: every change is a named "action" you can log, replay, or debug.',
-      'Decouples *what happened* (dispatched actions, described by components) from *how state changes* (decided by the reducer) — components stay simple.',
-      'Scales gracefully to complex state machines: undo/redo, multi-step wizards, carts with add/remove/update-quantity.'
+      'Centralizes all state-transition logic in one place — easy to find and test.',
+      'Makes state changes explicit and traceable — every change is a named action.',
+      'Separates what happened (the action) from how state changes (the reducer).',
+      'Scales well for complex state: undo/redo, multi-step forms, shopping carts.'
     ]
   },
 
   whenToUse: {
-    description: 'Reach for useReducer when you notice your useState-based logic getting tangled — not as a default replacement for simple state.',
+    description: 'Reach for useReducer when your useState logic starts getting complicated — not as a replacement for all simple state.',
     points: [
-      'State has several sub-values that frequently update together (e.g. a form with values + errors + touched fields + submitting status).',
-      'The next state depends on the *previous* state in non-trivial ways, or on the *type* of update (add vs remove vs reorder).',
-      'You want to test your state-transition logic in isolation, without rendering any components (a reducer is just a function!).',
-      'You\'re building something that resembles a state machine: wizards, undo/redo, games, complex filters/sorts.'
+      'State has several sub-values that update together (form values + errors + submitting).',
+      'The next state depends on the previous state in non-trivial ways.',
+      'You want to test state-transition logic without rendering any component.',
+      'You are building something like a state machine: wizards, undo/redo, games.'
     ],
     analogy: {
       icon: '⚖️',
-      title: 'useState vs useReducer — the simple rule of thumb',
-      text: '"If you can describe your state changes as a short list of simple `setX(newValue)` calls, useState is perfectly fine — and often clearer. Reach for useReducer when you find yourself writing the same complex update logic in multiple event handlers, or when a state change depends on several other pieces of state at once."'
+      title: 'useState vs useReducer — the simple rule',
+      text: '"If you can describe your state changes as simple setX(newValue) calls, useState is fine. Reach for useReducer when you find yourself writing the same complex update logic in multiple event handlers."'
     }
   },
 
   howItWorks: {
-    description: 'You provide a reducer function and an initial state. useReducer gives you the current state and a `dispatch` function. Calling dispatch(action) tells React: "run the reducer with the current state and this action, and re-render with whatever it returns".',
+    description: 'You provide a reducer function and an initial state. Calling dispatch(action) tells React: run the reducer with the current state and this action, then re-render with whatever it returns.',
     code: {
       title: 'A todo list reducer — the classic real-world example',
       snippet: `function todosReducer(todos, action) {
@@ -87,12 +87,11 @@ function TodoApp() {
   const handleDelete = (id) => dispatch({ type: 'deleted', id });
 
   return <TodoList todos={todos} onToggle={handleToggle} onDelete={handleDelete} />;
-}`
-    },
+}` },
     points: [
-      'The reducer must be PURE — no API calls, no timers, no mutating its arguments — just compute and return new state.',
-      'dispatch() is stable across renders (like a setState setter) — safe to pass down to children or list in dependency arrays.',
-      'Reducers are plain functions — you can unit-test them with simple input/output assertions, with zero React involved.'
+      'The reducer must be pure — no API calls, no timers, no mutating arguments.',
+      'dispatch() has a stable identity across renders — safe to pass to children.',
+      'Reducers are just functions — unit-test them with simple input/output assertions.'
     ]
   },
 
@@ -110,24 +109,24 @@ function TodoApp() {
   realWorldExamples: {
     intro: 'useReducer earns its keep when state logic gets genuinely complex:',
     items: [
-      { icon: '✅', title: 'Todo / task management apps', description: 'Actions like added, toggled, deleted, edited, reordered each have their own clear transformation — easy to extend and test.' },
-      { icon: '🛒', title: 'Shopping cart logic', description: 'add_item, remove_item, update_quantity, apply_coupon, clear_cart — centralizing this in a reducer keeps cart math correct and consistent everywhere it\'s used.' },
-      { icon: '🧙', title: 'Multi-step forms / wizards', description: 'next_step, prev_step, update_field, submit — the reducer enforces valid transitions and keeps all step data in one predictable object.' },
-      { icon: '↩️', title: 'Undo / redo systems', description: 'A reducer that keeps past/present/future slices of state can implement undo/redo by simply moving entries between those slices on dispatch.' }
+      { icon: '✅', title: 'Todo / task management', description: 'Actions like added, toggled, deleted, and reordered each have a clear transformation. Easy to extend and test.' },
+      { icon: '🛒', title: 'Shopping cart logic', description: 'add_item, remove_item, update_quantity, apply_coupon, clear_cart — one reducer keeps cart math correct everywhere.' },
+      { icon: '🧙', title: 'Multi-step forms', description: 'next_step, prev_step, update_field, submit — the reducer enforces valid transitions and keeps all step data in one object.' },
+      { icon: '↩️', title: 'Undo / redo systems', description: 'A reducer that keeps past/present/future state slices can implement undo/redo by moving entries between them.' }
     ]
   },
 
   prosAndCons: {
     pros: [
-      'Centralizes and documents all the ways state can change — a reducer is effectively living documentation of your state machine.',
-      'Pure functions are trivially unit-testable — assert reducer(state, action) === expectedState with no rendering involved.',
-      'Makes complex updates predictable and traceable (you can log every dispatched action for debugging).',
-      'dispatch has a stable identity, simplifying dependency arrays and passing it down to deeply nested children.'
+      'Centralizes all ways state can change — a reducer is living documentation of your state machine.',
+      'Pure functions are easy to unit-test — assert reducer(state, action) === expectedState.',
+      'Makes complex updates predictable and traceable.',
+      'dispatch has a stable identity — simple to pass down and use in dependency arrays.'
     ],
     cons: [
-      'More upfront boilerplate (action types, switch statements) than a simple useState for trivial state.',
-      'Can feel like overkill for state that\'s genuinely simple — adds a layer of indirection that isn\'t always needed.',
-      'Designing a good action/reducer shape takes a bit of practice — overly granular or overly broad actions both cause friction.'
+      'More boilerplate (action types, switch statements) than useState for simple state.',
+      'Can feel like overkill for state that is genuinely simple.',
+      'Designing a good action shape takes practice.'
     ]
   },
 
@@ -144,7 +143,7 @@ const removeItem = (id) => setItems(prev => prev.filter(i => i.id !== id));
 const updateQty = (id, qty) =>
   setItems(prev => prev.map(i => i.id === id ? { ...i, qty } : i));
 // ...repeated and re-derived in every component that needs to mutate the cart`,
-      note: 'Works fine — but the "rules" of how the cart changes live in many places, and are easy to duplicate or get subtly wrong.'
+      note: 'Works fine — but cart rules live in many places and are easy to duplicate or get wrong.'
     },
     right: {
       title: '✅ useReducer — logic centralized & testable',
@@ -168,43 +167,43 @@ dispatch({ type: 'add', item });`,
       {
         title: 'Putting side effects (API calls, timers) inside the reducer',
         wrong: `function reducer(state, action) {\n  if (action.type === 'save') {\n    fetch('/api/save', { method: 'POST', body: JSON.stringify(state) }); // ❌ impure!\n  }\n  return state;\n}`,
-        right: `// ✅ keep the reducer pure — trigger the side effect from an event handler or useEffect instead\nconst handleSave = () => { dispatch({ type: 'saving' }); api.save(state).then(() => dispatch({ type: 'saved' })); };`,
-        note: 'Reducers must be pure (no API calls, no randomness, no mutation) so React can safely call them — including potentially twice in development (Strict Mode) to help you find bugs.'
+        right: `// ✅ keep the reducer pure — trigger side effects from event handlers or useEffect\nconst handleSave = () => { dispatch({ type: 'saving' }); api.save(state).then(() => dispatch({ type: 'saved' })); };`,
+        note: 'Reducers must be pure. React may call them twice in development (Strict Mode) to catch bugs.'
       },
       {
         title: 'Mutating the state argument inside the reducer',
-        wrong: `case 'toggled':\n  state[index].done = !state[index].done; // ❌ mutates the existing array/object\n  return state;`,
-        right: `case 'toggled':\n  return state.map((t, i) => i === index ? { ...t, done: !t.done } : t); // ✅ new array & objects`,
+        wrong: `case 'toggled':\n  state[index].done = !state[index].done; // ❌ mutates the existing array\n  return state;`,
+        right: `case 'toggled':\n  return state.map((t, i) => i === index ? { ...t, done: !t.done } : t); // ✅ new array`,
       },
       {
-        title: 'Reaching for useReducer when useState would be clearer',
-        note: 'If your state is just a number, string, or boolean with simple set/toggle operations, useState is more direct and readable. Save useReducer for state with real structure and transition logic — using it everywhere "just in case" adds unnecessary ceremony.'
+        title: 'Using useReducer when useState would be simpler',
+        note: 'If your state is just a number, string, or boolean with a simple set or toggle, useState is clearer. Save useReducer for state with real structure and transition logic.'
       }
     ]
   },
 
   bestPractices: [
-    'Keep reducers pure — no API calls, no timers, no randomness, no mutation. Just compute and return new state.',
-    'Model actions as plain objects with a descriptive `type` (and minimal payload) — they double as a log of "everything that can happen" in your feature.',
-    'Always return new objects/arrays for changed parts of state — spread syntax, .map(), .filter() — never mutate in place.',
-    'Co-locate the reducer function near the component (or in its own file) and unit-test it directly: it\'s just a function.',
-    'Pair useReducer with useContext when several components need to dispatch to (and read from) the same store — a lightweight Redux-like setup with zero extra dependencies.'
+    'Keep reducers pure — no API calls, no timers, no randomness, no mutation.',
+    'Name actions with a descriptive type that explains what happened.',
+    'Always return new objects and arrays for changed parts of state — never mutate.',
+    'Unit-test your reducer directly — it is just a function.',
+    'Pair useReducer with useContext for a lightweight global store with no extra dependencies.'
   ],
 
   interviewQuestions: [
-    { q: 'What is useReducer, and how does it differ from useState?', a: 'useReducer manages state via a pure reducer function — (state, action) => newState — and a dispatch function used to send "actions" describing what happened. useState directly returns a setter for the value. useReducer centralizes complex state-transition logic in one testable place, while useState is more direct for simple, independent values. Internally, useState is actually implemented in terms of the same primitive as useReducer.' },
-    { q: 'What does it mean for a reducer to be "pure", and why does that matter?', a: 'A pure reducer always returns the same output for the same (state, action) inputs, and causes no side effects (no API calls, no mutation, no randomness, no timers). This matters because React may call reducers multiple times (e.g. in Strict Mode, or while figuring out concurrent updates) — impure reducers would cause duplicated side effects or inconsistent results. It also makes reducers trivially unit-testable as plain functions.' },
-    { q: 'When would you choose useReducer over multiple useState calls?', a: 'When several pieces of state change together in response to the same events, when the next state depends on complex logic about the *type* of update, or when you want to centralize and test your state-transition logic independent of any component. A common signal is noticing the same complex update logic duplicated across several event handlers — that logic belongs in a reducer.' },
-    { q: 'How would you combine useReducer with useContext to build a lightweight global store?', a: 'Create a context whose value is `{ state, dispatch }` from a useReducer call in a Provider component near the top of your tree. Any descendant can then call useContext to read state and dispatch actions — giving you a small, app-specific Redux-like store using only built-in React APIs, often wrapped in custom hooks like useCart() or useAuth() for a clean consumer-facing API.' },
-    { q: 'Why is dispatch guaranteed to have a stable identity across renders, and why does that matter?', a: 'React guarantees the dispatch function returned by useReducer (like the setter from useState) keeps the same reference across re-renders of the component. This means you can safely include it in dependency arrays (useEffect, useCallback) or pass it to deeply memoized child components without causing unnecessary re-renders or effect re-runs.' }
+    { q: 'What is useReducer, and how does it differ from useState?', a: 'useReducer manages state through a pure reducer function — (state, action) => newState — and a dispatch function. useState directly returns a setter for the value. useReducer centralizes complex state-transition logic in one testable place, while useState is simpler for independent values.' },
+    { q: 'What does it mean for a reducer to be "pure", and why does that matter?', a: 'A pure reducer always returns the same output for the same inputs and causes no side effects. This matters because React may call reducers multiple times in Strict Mode. Pure reducers are also trivially unit-testable as plain functions.' },
+    { q: 'When would you choose useReducer over multiple useState calls?', a: 'When several pieces of state change together, when the next state depends on complex logic, or when you want to test your state-transition logic independently. A common sign is the same complex update logic duplicated in several event handlers.' },
+    { q: 'How would you combine useReducer with useContext for a global store?', a: 'Create a context whose value is { state, dispatch } from useReducer in a Provider near the top of your tree. Any descendant can useContext to read state and dispatch actions — a lightweight Redux-like setup with only built-in React APIs.' },
+    { q: 'Why is dispatch guaranteed to have a stable identity across renders?', a: 'React guarantees that dispatch keeps the same reference across re-renders, like the setter from useState. This means you can safely include it in dependency arrays or pass it to memoized child components without causing unnecessary re-renders.' }
   ],
 
   summary: {
-    description: 'useReducer turns "how does my state change?" into a single, pure, testable function — and turns "something happened" into a clearly-named, traceable action. Reach for it when state has real structure and transition logic; keep using useState for simple, independent values. Combined with useContext, it becomes a lightweight, dependency-free global store.'
+    description: 'useReducer turns all your state transitions into one pure, testable function. Every change is a named action. Reach for it when state has real structure and multiple transition types. Combine with useContext for a simple global store.'
   },
 
   furtherReading: [
-    { label: 'Official docs', note: 'react.dev/learn/extracting-state-logic-into-a-reducer and react.dev/reference/react/useReducer — the canonical "convert useState to useReducer" walkthrough and full API reference.' }
+    { label: 'Official docs', note: 'react.dev/learn/extracting-state-logic-into-a-reducer and react.dev/reference/react/useReducer — the "convert useState to useReducer" walkthrough and full API reference.' }
   ]
 };
 

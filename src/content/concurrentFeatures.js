@@ -3,21 +3,21 @@ const concurrentFeaturesContent = {
   title: 'Concurrent Features',
   icon: '🌀',
   theme: 'violet',
-  tagline: 'React 18\'s concurrent rendering engine — interruptible renders, automatic batching, and the Hooks that expose it.',
+  tagline: 'React 18 can pause, interrupt, and prioritize renders — keeping the UI responsive during heavy work.',
   meta: 'Concepts · Modern React',
 
   whatIsIt: {
     description: [
-      'React\'s concurrent rendering mode (introduced in React 18) changes how React schedules and executes renders. Instead of every update being completed synchronously from start to finish, React can now start a render, pause it, continue other work, and resume — keeping the UI responsive even during expensive renders.',
-      'Concurrent features include: automatic batching (multiple state updates → one render), useTransition (mark updates as non-urgent), useDeferredValue (defer a fast-changing value), Suspense for data (show loading states declaratively), and streaming SSR with Server Components.'
+      'React 18\'s concurrent rendering mode changes how React schedules renders. Instead of every update blocking the main thread until it finishes, React can now pause a render, do something more urgent, and resume — keeping the UI responsive.',
+      'Concurrent features include: automatic batching (multiple state updates → one render), useTransition (mark updates as non-urgent), useDeferredValue (defer a fast-changing value), and streaming SSR with Suspense.'
     ],
     points: [
-      'Concurrent rendering is opt-in at the root: ReactDOM.createRoot() enables it; ReactDOM.render() (legacy) does not.',
-      'Key concept: React can now INTERRUPT and DISCARD an in-progress render when something more urgent arrives — no longer "once React starts a render, it can\'t stop".',
-      'Automatic batching: state updates in async code (setTimeout, Promises) are now batched in React 18 — previously they each triggered a separate render.',
-      'The "use" Hook (React 19) and Server Components build further on the concurrent model.'
+      'Enable concurrent mode by using createRoot() instead of ReactDOM.render().',
+      'Key change: React can now interrupt and discard an in-progress render when something urgent arrives.',
+      'Automatic batching: state updates in async code (setTimeout, Promises) are batched in React 18 — previously each caused a separate render.',
+      'useTransition and useDeferredValue let you explicitly mark work as "can wait".'
     ],
-    code: { title: 'Opting into concurrent mode + automatic batching demo', snippet: `// 1. Enable concurrent mode (replaces ReactDOM.render in React 18+)
+    code: { title: 'Concurrent mode + automatic batching demo', snippet: `// 1. Enable concurrent mode (replaces ReactDOM.render in React 18+)
 import { createRoot } from 'react-dom/client';
 const root = createRoot(document.getElementById('root'));
 root.render(<App />);
@@ -42,37 +42,37 @@ const deferredQuery = useDeferredValue(query);
     analogy: {
       icon: '🎭',
       title: 'Real-World Analogy',
-      text: '"Old React was like a chef who would start chopping an entire bag of onions and refuse to take any other orders until every last onion was chopped — the kitchen freezes. Concurrent React is a chef who pauses the onion-chopping immediately when an urgent \'table needs drinks\' request arrives, handles the urgent thing, then comes back to the onions right where they left off. The same work gets done, but urgent requests are never kept waiting."'
+      text: '"Old React was like a chef who would start chopping a big bag of onions and refuse all other orders until finished — the kitchen freezes. Concurrent React is a chef who immediately pauses the onions when an urgent drinks request arrives, handles it, then returns to the onions right where they left off. The same work gets done, but urgent requests are never kept waiting."'
     }
   },
 
   whyUsed: {
-    description: 'Before concurrent rendering, any expensive synchronous render could freeze the browser\'s main thread — making buttons unresponsive, inputs laggy, and animations janky. Concurrent mode gives React the ability to prioritize work, keeping the UI responsive even during heavy rendering tasks.',
+    description: 'Before concurrent rendering, any expensive render could freeze the browser — making buttons unresponsive and inputs laggy. Concurrent mode lets React prioritize urgent interactions so the UI stays snappy even during heavy work.',
     points: [
-      'Prevents UI freezes from expensive synchronous renders — React can pause and prioritize urgent interactions.',
-      'Automatic batching reduces unnecessary re-renders from async code — fewer renders, better performance.',
-      'useTransition + useDeferredValue let developers explicitly mark "this update can wait" for better UX control.',
-      'Enables streaming SSR — server-rendered pages can start streaming HTML before all data is ready.'
+      'Prevents UI freezes from expensive renders — React can pause and prioritize urgent interactions.',
+      'Automatic batching reduces unnecessary re-renders from async code.',
+      'useTransition and useDeferredValue give explicit control over what can wait.',
+      'Enables streaming SSR — server pages stream HTML before all data is ready.'
     ]
   },
 
   whenToUse: {
-    description: 'Concurrent mode is enabled at the root for all React 18 apps using createRoot(). The specific concurrent APIs are opt-in within your app.',
+    description: 'Concurrent mode is enabled at the root for all React 18 apps using createRoot(). The specific APIs are opt-in.',
     points: [
-      'useTransition: expensive state updates (tab switching, heavy filters) that should be deprioritized vs. urgent input.',
-      'useDeferredValue: fast-changing values (search queries) feeding expensive child renders that should "lag behind" gracefully.',
-      'Suspense for data: declarative loading states — requires a Suspense-compatible data library or framework.',
+      'useTransition: expensive state updates (tab switching, heavy filters) that can be deprioritized vs. urgent typing.',
+      'useDeferredValue: fast-changing values (search queries) feeding expensive renders that should lag behind gracefully.',
+      'Suspense for data: declarative loading states with a compatible data library or framework.',
       'Streaming SSR: Next.js App Router + Server Components use this automatically.'
     ],
     analogy: {
       icon: '⚠️',
-      title: 'Concurrent mode ≠ automatically faster',
-      text: '"Concurrent rendering changes HOW React schedules work — it doesn\'t make any individual render faster. A component that takes 200ms to render still takes 200ms; concurrent mode just ensures that 200ms render doesn\'t freeze the input field. For actual speed improvements, you still need useMemo, virtualization, and algorithmic optimizations — concurrent mode layers prioritization on top of those."'
+      title: 'Concurrent mode does NOT make renders faster',
+      text: '"Concurrent rendering changes HOW React schedules work — it does not make any individual render faster. A component that takes 200ms still takes 200ms. Concurrent mode ensures that 200ms does not freeze the input field. For actual speed improvements, you still need useMemo, virtualization, and better algorithms."'
     }
   },
 
   howItWorks: {
-    description: 'React 18\'s scheduler assigns different priorities to different updates. User-input events (typing, clicking) are "urgent" and must render synchronously. State updates wrapped in startTransition are "transition" priority — lower priority, interruptible, and can be abandoned if a newer urgent update comes in. React interleaves these priorities using the browser\'s idle callback / scheduler to keep the main thread free for urgent work.',
+    description: 'React 18\'s scheduler assigns different priorities to updates. User-input events (typing, clicking) are "urgent" and render synchronously. Updates wrapped in startTransition are "lower priority" — interruptible and can be abandoned if a newer urgent update arrives.',
     code: {
       title: 'All concurrent APIs working together',
       snippet: `function SearchApp() {
@@ -101,9 +101,9 @@ const deferredQuery = useDeferredValue(query);
   );
 }` },
     points: [
-      'flushSync() (from react-dom) is an escape hatch to force a synchronous, non-batched update — use it in situations where you must read the DOM immediately after a state update.',
-      'Transitions are NOT async — the state update itself is synchronous; it\'s the RENDER of that update that\'s deprioritized and interruptible.',
-      'React Strict Mode\'s double-invocation behavior is specifically designed to help you find code that breaks when renders are interrupted/restarted — a prerequisite for safely using concurrent features.'
+      'flushSync() (from react-dom) forces a synchronous update — use it when you must read the DOM immediately after a state update.',
+      'Transitions are NOT async — the state update is synchronous. Only the RENDER of that update is deprioritized.',
+      'React StrictMode\'s double-invocation helps you find code that breaks when renders are interrupted and restarted.'
     ]
   },
 
@@ -121,25 +121,25 @@ const deferredQuery = useDeferredValue(query);
   realWorldExamples: {
     intro: 'Concurrent features power the next generation of responsive React UIs:',
     items: [
-      { icon: '📝', title: 'Live document editors', description: 'Typing must remain perfectly smooth even while a complex document preview re-renders in the background — useTransition keeps the typing urgent while the preview is a transition.' },
-      { icon: '🔍', title: 'Search with rich result cards', description: 'Typing in a search box stays instant; the results panel below updates a beat behind via useDeferredValue, preventing every keystroke from triggering a heavy re-render.' },
-      { icon: '📊', title: 'Dashboard tab switching', description: 'Clicking a tab that renders a complex dashboard is wrapped in useTransition — the click registers instantly (the tab highlights), while the expensive content renders in the background.' },
-      { icon: '🌐', title: 'Streaming SSR in Next.js App Router', description: 'Pages wrapped in Suspense boundaries stream their HTML progressively as server data resolves — users see content start appearing immediately rather than waiting for all data.' }
+      { icon: '📝', title: 'Live document editors', description: 'Typing stays perfectly smooth even while a complex document preview re-renders in the background via useTransition.' },
+      { icon: '🔍', title: 'Search with rich result cards', description: 'Typing in a search box stays instant; the results panel updates a beat behind via useDeferredValue.' },
+      { icon: '📊', title: 'Dashboard tab switching', description: 'Clicking a heavy tab wrapped in useTransition registers instantly (the tab highlights) while the expensive content renders in the background.' },
+      { icon: '🌐', title: 'Streaming SSR in Next.js', description: 'Pages wrapped in Suspense boundaries stream HTML progressively as server data resolves — users see content start appearing immediately.' }
     ]
   },
 
   prosAndCons: {
     pros: [
-      'Keeps UI responsive during expensive renders — the most impactful architectural improvement in React 18.',
+      'Keeps UI responsive during expensive renders — the biggest improvement in React 18.',
       'Automatic batching reduces renders from async code automatically — no code changes needed.',
-      'Prioritization APIs (useTransition, useDeferredValue) give fine-grained control over render scheduling.',
-      'Enables streaming SSR and progressive hydration — dramatically better perceived load performance.'
+      'useTransition and useDeferredValue give fine-grained control over render scheduling.',
+      'Enables streaming SSR and progressive hydration — better perceived load performance.'
     ],
     cons: [
-      'Opt-in via createRoot() — apps using legacy ReactDOM.render() don\'t get concurrent features without migration.',
-      'The render phase being interruptible means impure renders (side effects in render) break — requires strict purity.',
-      'StrictMode\'s double-invocation is more visible and can confuse developers new to concurrent mode.',
-      'Some third-party libraries were not written with concurrent mode in mind and may have subtle issues — check for compatibility.'
+      'Requires createRoot() — apps using legacy ReactDOM.render() do not get concurrent features.',
+      'Interruptible renders mean impure render functions (side effects during render) break.',
+      'StrictMode\'s double invocation is more visible and can confuse developers new to concurrent mode.',
+      'Some older third-party libraries may not be compatible with concurrent rendering.'
     ]
   },
 
@@ -148,43 +148,43 @@ const deferredQuery = useDeferredValue(query);
       {
         title: 'Using ReactDOM.render() instead of createRoot() in React 18',
         wrong: `ReactDOM.render(<App />, document.getElementById('root')); // ❌ legacy mode — no concurrent features`,
-        right: `import { createRoot } from 'react-dom/client';\ncreatRoot(document.getElementById('root')).render(<App />); // ✅ concurrent mode enabled`,
-        note: 'ReactDOM.render() runs in legacy mode and doesn\'t enable React 18\'s concurrent features (automatic batching, useTransition, etc.). createRoot() is the entry point for all React 18 concurrent features.'
+        right: `import { createRoot } from 'react-dom/client';\ncreateRoot(document.getElementById('root')).render(<App />); // ✅`,
+        note: 'ReactDOM.render() runs in legacy mode with no React 18 concurrent features. createRoot() is the entry point for everything concurrent.'
       },
       {
-        title: 'Expecting concurrent mode to make slow renders fast',
-        note: 'Concurrent mode manages SCHEDULING — it can interrupt a render and defer it, but once it runs, it runs at the same speed as before. If a component takes 200ms to render synchronously, wrapping its state update in startTransition makes the UI RESPONSIVE for those 200ms, but the render itself still takes 200ms. Actual speed improvements come from useMemo, virtualization, fewer components rendering, etc.'
+        title: 'Expecting concurrent mode to make slow renders faster',
+        note: 'Concurrent mode manages scheduling — it can defer a render, but once it runs, it runs at the same speed. If a component takes 200ms, startTransition makes the UI responsive for those 200ms but the render still takes 200ms. Speed improvements come from useMemo, virtualization, and fewer re-renders.'
       },
       {
-        title: 'Putting side effects in the render function in a concurrent app',
-        note: 'Concurrent rendering can call your component function multiple times (and discard intermediate results). Side effects in the render function (fetch, mutations, timers) will run multiple times with unexpected results. With StrictMode enabled (the default in React 18 development), this surfaces immediately — treat any double-invocation as the bug it is, and move all side effects to useEffect.'
+        title: 'Putting side effects in the render function',
+        note: 'Concurrent rendering can call your component function multiple times and discard results. Side effects in render (fetch, mutations, timers) run multiple times with unpredictable results. With StrictMode enabled, this surfaces immediately as double-invocation. Move all side effects to useEffect.'
       }
     ]
   },
 
   bestPractices: [
-    'Migrate to createRoot() — it\'s the prerequisite for all React 18 concurrent features and the new default.',
-    'Keep render functions strictly pure — concurrent mode may invoke them multiple times; side effects must live in effects.',
-    'Use useTransition for explicit transitions, useDeferredValue for implicitly "lagging behind" values — start with profiling to confirm you actually need them.',
-    'Leverage automatic batching — you may find you can remove manual batching workarounds (unstable_batchedUpdates) after upgrading to React 18.',
-    'Enable React.StrictMode in development — it\'s the best early-warning system for code that\'s incompatible with concurrent rendering.'
+    'Migrate to createRoot() — it is required for all React 18 concurrent features.',
+    'Keep render functions strictly pure — concurrent mode may call them multiple times.',
+    'Use useTransition for explicit transitions; useDeferredValue for implicitly lagging values — profile first to confirm you need them.',
+    'Use automatic batching — you may be able to remove manual batching workarounds after upgrading to React 18.',
+    'Enable React StrictMode in development — it is the best early-warning system for concurrent-mode incompatibilities.'
   ],
 
   interviewQuestions: [
-    { q: 'What is the key difference between legacy React rendering and concurrent rendering?', a: 'In legacy mode (ReactDOM.render), once React starts a render it runs synchronously to completion — a long render blocks the main thread, making the UI unresponsive. In concurrent mode (createRoot), React can interrupt a render in progress if a higher-priority update arrives (user input), work on the urgent update first, and then resume or restart the interrupted work. The UI stays responsive because urgent interactions always take priority.' },
-    { q: 'What is automatic batching in React 18, and what changed from React 17?', a: 'Automatic batching groups multiple state updates into a single re-render, preventing unnecessary intermediate renders. In React 17, batching only happened for updates in synchronous event handlers — updates inside setTimeout, Promises, or async code each triggered their own render. In React 18 with createRoot(), ALL state updates are batched automatically regardless of where they originate — reducing renders from async code significantly without any code changes.' },
-    { q: 'What does it mean for a render to be "interruptible" in concurrent mode?', a: 'React can pause an in-progress low-priority (transition) render when a higher-priority update (like user input) arrives. The paused render work is discarded and React immediately processes the urgent update first. After committing the urgent update, React starts the transition render fresh with the latest state. This ensures urgent interactions always feel instant, at the cost of transition work occasionally being "thrown away and redone" — which is acceptable because the result of the most recent input is always what matters.' },
-    { q: 'How does concurrent rendering change the requirements for component purity?', a: 'Concurrent rendering may call a component\'s render function multiple times (to test if a scheduled interrupt will produce the right result) and discard intermediate results. Any side effects in the render function (fetch calls, DOM mutations, subscriptions, writing to refs/variables outside React) will execute multiple times with unpredictable ordering and results. Concurrent mode makes the "render must be pure" rule strictly necessary, not just stylistically preferred.' },
-    { q: 'Name three specific React 18+ APIs that surface concurrent rendering capabilities to developers.', a: 'useTransition([isPending, startTransition]): lets you mark a state update as non-urgent so React can deprioritize and interrupt its render in favor of urgent updates, with a built-in isPending flag for loading UI. useDeferredValue(value): returns a "lagging behind" version of a fast-changing value, letting an expensive consumer render at its own pace. Automatic batching: state updates from async code (setTimeout, Promises) are now automatically batched into single renders, previously requiring manual workarounds.' }
+    { q: 'What is the key difference between legacy and concurrent rendering?', a: 'In legacy mode (ReactDOM.render), once React starts a render it runs synchronously to completion — a long render blocks the main thread and freezes the UI. In concurrent mode (createRoot), React can interrupt a render when something more urgent arrives (user input), process the urgent update, then resume or restart the lower-priority work. The UI stays responsive because urgent interactions always take priority.' },
+    { q: 'What is automatic batching in React 18?', a: 'Automatic batching groups multiple state updates into a single re-render. In React 17, batching only worked inside synchronous event handlers — updates in setTimeout or Promises each triggered separate renders. In React 18 with createRoot(), ALL state updates are batched automatically regardless of where they are called, reducing renders without any code changes.' },
+    { q: 'What does it mean for a render to be "interruptible"?', a: 'React can pause an in-progress low-priority (transition) render when a higher-priority update (user input) arrives. The paused work is discarded and React immediately processes the urgent update. After committing the urgent update, React starts the transition render fresh with the latest state. Urgent interactions always feel instant because they never wait for transition work to finish.' },
+    { q: 'How does concurrent rendering change the requirements for component purity?', a: 'Concurrent rendering may call a component\'s render function multiple times and discard intermediate results. Any side effects in the render function will execute multiple times with unpredictable results. Concurrent mode makes "render must be pure" strictly necessary, not just a style preference. Move all side effects to useEffect.' },
+    { q: 'Name three React 18+ APIs that expose concurrent rendering capabilities.', a: 'useTransition returns [isPending, startTransition] — mark a state update as non-urgent so React can deprioritize and interrupt its render. useDeferredValue(value) returns a lagging copy of a fast-changing value so expensive consumers can update at their own pace. Automatic batching — state updates from async code are now batched into single renders automatically.' }
   ],
 
   summary: {
-    description: 'Concurrent React 18 fundamentally changes how renders are scheduled — from an uninterruptible synchronous guarantee to a priority-based, interruptible system that keeps urgent interactions responsive while expensive work happens in the background. Enable it with createRoot(), keep renders pure, and leverage useTransition/useDeferredValue/Suspense for the UX-level control concurrent rendering makes possible.'
+    description: 'Concurrent React 18 changes renders from uninterruptible synchronous work to priority-based, interruptible scheduling — keeping urgent interactions responsive while heavy work runs in the background. Enable it with createRoot(), keep renders pure, and use useTransition, useDeferredValue, and Suspense for the UX-level control concurrent rendering makes possible.'
   },
 
   furtherReading: [
-    { label: 'Official docs', note: 'react.dev/blog/2022/03/29/react-v18 — the React 18 release post explaining concurrent features, automatic batching, and the createRoot migration.' },
-    { label: 'Related topics', note: 'See "useTransition" and "useDeferredValue" for the scheduling-control APIs, "Suspense" for declarative loading states, and "Rendering Lifecycle" for the foundational model concurrent rendering builds on.' }
+    { label: 'Official docs', note: 'react.dev/blog/2022/03/29/react-v18 — the React 18 release post explaining concurrent features and the createRoot migration.' },
+    { label: 'Related topics', note: 'See "useTransition" and "useDeferredValue" for the scheduling APIs, "Suspense" for declarative loading, and "Rendering Lifecycle" for the foundational model.' }
   ]
 };
 

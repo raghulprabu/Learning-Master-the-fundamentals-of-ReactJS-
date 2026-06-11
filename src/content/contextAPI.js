@@ -3,19 +3,19 @@ const contextAPIContent = {
   title: 'Context API — Deep Dive',
   icon: '🌐',
   theme: 'teal',
-  tagline: 'The full Context API: advanced patterns, performance, composing providers, and combining with useReducer.',
+  tagline: 'Context lets you share data across many components without passing props at every level.',
   meta: 'Ecosystem · State · Deep Dive',
 
   whatIsIt: {
     description: [
-      'The Context API (createContext + Provider + useContext) is React\'s built-in solution for "ambient data" — values needed by many components at different tree depths without manual prop-passing at every level.',
-      'While useContext covers day-to-day consumption, the full API includes advanced patterns: multiple providers, context composition, performance optimization via memoization, and the classic "lightweight Redux" pattern of combining Context with useReducer.'
+      'The Context API (createContext + Provider + useContext) is React\'s built-in solution for data that many components need — like the logged-in user, theme, or language — without passing it as props through every level.',
+      'Advanced patterns include: multiple providers for separate concerns, combining Context with useReducer to build a lightweight global store, and memoizing the context value to avoid unnecessary re-renders.'
     ],
     points: [
-      'createContext(defaultValue) — creates the context object; the default is used only when there is NO matching Provider above a consumer.',
-      '<Context.Provider value={...}> — broadcasts a value to all descendants; nesting providers creates scoped overrides.',
-      'useContext(Context) — reads the nearest ancestor Provider\'s value, subscribing the component to updates.',
-      'Context.displayName — set this on your context object for cleaner React DevTools labeling.'
+      'createContext(defaultValue) — creates the context; the default is only used when there is no matching Provider above.',
+      '<Context.Provider value={...}> — broadcasts a value to all descendants below it.',
+      'useContext(Context) — reads the nearest Provider\'s value and re-renders when it changes.',
+      'Context.displayName — set this so React DevTools shows a readable label instead of "Context.Provider".'
     ],
     code: { title: 'Production-ready Context + useReducer store', snippet: `const CartContext = createContext(null);
 
@@ -42,40 +42,40 @@ export function useCart() {
     analogy: {
       icon: '🌐',
       title: 'Real-World Analogy',
-      text: '"Context is the office intranet — not every employee asks the CEO directly for the company\'s mission statement each morning. It\'s broadcast once to the whole building, and anyone who needs it can tune in. Multiple \'broadcasts\' can coexist on different \'channels\' (separate contexts), and a specific floor can override the company-wide signal with their own (nested Providers)."'
+      text: '"Context is like an office intranet. The CEO broadcasts the company mission once to the whole building — every employee can read it without asking the CEO directly each time. Multiple broadcasts can run on different channels (separate contexts), and one floor can override the company signal with their own (nested Providers)."'
     }
   },
 
   whyUsed: {
-    description: 'The Context API removes "prop drilling" — the tedious and brittle practice of passing data through every intermediate component. It\'s the right choice for genuinely cross-cutting, ambient data (auth, theme, locale, feature flags) that many components need without being directly related to each other.',
+    description: 'Context removes "prop drilling" — the tedious and fragile practice of passing data through every intermediate component that does not actually use it.',
     points: [
-      'Eliminates prop drilling: a Provider at the top, consumers anywhere below — no middlemen.',
-      'Decouples producers from consumers: the component broadcasting the value doesn\'t need to know who reads it.',
-      'Paired with useReducer, becomes a no-dependency global-store substitute for moderate apps.',
-      'Enables scoped overrides: a nested Provider can supply a different value to a subtree, ideal for themes, i18n variants, or test fixtures.'
+      'Eliminates prop drilling: one Provider at the top, consumers anywhere below.',
+      'Decouples producers from consumers — the broadcaster does not need to know who reads it.',
+      'Paired with useReducer, creates a complete lightweight store with no extra libraries.',
+      'Nested Providers can supply different values to specific subtrees — great for themes and tests.'
     ]
   },
 
   whenToUse: {
-    description: 'Context is ideal for cross-cutting "ambient" data that changes infrequently and is needed broadly. It\'s NOT a silver bullet for all shared state.',
+    description: 'Context is ideal for data that changes infrequently and is needed by many components across the tree.',
     points: [
-      'Shared global data: auth user, theme, locale, feature flags — changes infrequently, needed broadly.',
-      'Dependency injection: passing store references, router instances, or service objects deep without prop chains.',
-      'Multiple contexts for separate concerns — split CartContext, AuthContext, ThemeContext rather than one mega context.',
-      'Avoid for high-frequency state (e.g. every-keystroke form values) shared across many components — every consumer re-renders on change.'
+      'Global data: logged-in user, theme, language — changes rarely, needed broadly.',
+      'Dependency injection: passing store references or service objects without prop chains.',
+      'Multiple contexts for separate concerns — AuthContext, ThemeContext, CartContext separately.',
+      'Avoid for high-frequency state — every consumer re-renders when the value changes.'
     ],
     analogy: {
       icon: '⚠️',
       title: 'Context is not a state manager',
-      text: '"Context broadcasts a value and triggers re-renders in every consumer when it changes. It doesn\'t batch or optimize — if your context value changes on every keystroke and 50 components consume it, all 50 will re-render. For frequent state shared widely, pair with memoization, split contexts, or reach for an external state library."'
+      text: '"Context broadcasts a value and re-renders every consumer when it changes. If your context value changes on every keystroke and 50 components consume it, all 50 will re-render. For frequent, fine-grained state shared across many components, use memoization, split contexts, or an external state library."'
     }
   },
 
   howItWorks: {
-    description: 'Context works in three layers: creation (createContext defines the channel and default), provision (Provider broadcasts a value down the tree), and consumption (useContext subscribes a component to the nearest Provider\'s current value and re-renders it when that value changes).',
+    description: 'Context works in three steps: createContext defines the channel, Provider broadcasts the value, and useContext subscribes a component to the nearest Provider\'s value and re-renders when it changes.',
     code: {
       title: 'Multi-context composition — the real-world provider pattern',
-      snippet: `// Compose multiple providers near the app root — each context stays focused
+      snippet: `// Compose multiple providers near the app root — each stays focused
 function AppProviders({ children }) {
   return (
     <AuthProvider>
@@ -104,9 +104,9 @@ function CheckoutButton() {
 }`
     },
     points: [
-      'A consumer re-renders ONLY when the value of the specific context it subscribes to changes — not when other, unrelated contexts change.',
-      'The default value (from createContext) is used as a fallback ONLY when there\'s no matching Provider ancestor — useful for components used in isolation (tests, Storybook).',
-      'context.displayName = "CartContext" makes the Provider/Consumer names appear helpfully in React DevTools instead of "Context.Provider".'
+      'A consumer re-renders ONLY when the specific context it subscribes to changes — not when other unrelated contexts change.',
+      'The default value from createContext is used only when there is no matching Provider ancestor — useful for isolated component tests.',
+      'Set context.displayName = "CartContext" so DevTools shows helpful names instead of "Context.Provider".'
     ]
   },
 
@@ -124,25 +124,25 @@ function CheckoutButton() {
   realWorldExamples: {
     intro: 'Context powers the "ambient infrastructure" of nearly every medium-to-large React app:',
     items: [
-      { icon: '🔐', title: 'Auth context (useAuth)', description: 'The logged-in user, login/logout/refresh functions — consumed by navigation, profile pages, protected routes, and API-call helpers throughout the app.' },
-      { icon: '🌓', title: 'Theme context (useTheme)', description: 'Light/dark mode preference, shared color tokens — consumed by every styled component, button, and layout container with zero prop chains.' },
-      { icon: '🌍', title: 'Internationalization (useIntl / useTranslation)', description: 'The active locale and a t(key) translation function — consumed by every piece of text-rendering UI, provided by a single root-level LanguageProvider.' },
-      { icon: '🛒', title: 'Shopping cart context (useCart)', description: 'Cart items, add/remove/clear — consumed by the header quantity badge, product grid add-buttons, and the checkout page simultaneously.' }
+      { icon: '🔐', title: 'Auth context (useAuth)', description: 'The logged-in user plus login/logout functions — consumed by navigation, profile pages, protected routes, and API helpers across the app.' },
+      { icon: '🌓', title: 'Theme context (useTheme)', description: 'Light/dark mode preference and color tokens — consumed by every styled component with zero prop chains.' },
+      { icon: '🌍', title: 'Internationalization (useTranslation)', description: 'The active locale and a translate function — consumed by every text-rendering component, provided by one root LanguageProvider.' },
+      { icon: '🛒', title: 'Shopping cart (useCart)', description: 'Cart items and add/remove/clear — consumed by the header badge, product buttons, and checkout page simultaneously.' }
     ]
   },
 
   prosAndCons: {
     pros: [
       'Built in — no dependencies, no bundle overhead beyond React itself.',
-      'Eliminates prop drilling for cross-cutting data, keeping intermediate components clean.',
-      'Combined with useReducer, provides a complete, testable "mini-store" for moderate apps.',
+      'Eliminates prop drilling for cross-cutting data.',
+      'Combined with useReducer, provides a complete testable mini-store.',
       'Naturally scoped via nesting — subtrees can override context without affecting siblings.'
     ],
     cons: [
-      'All consumers re-render when the context value changes — a performance cliff if not managed (memoization, value stability).',
-      'Not optimized for high-frequency or highly granular state — external libraries with selectors scale better there.',
-      'Can make component dependencies implicit (you can\'t tell from a component\'s props alone what data it needs).',
-      'Overuse leads to "hidden globals" — context that seems convenient initially but becomes hard to trace as apps grow.'
+      'All consumers re-render when the context value changes — a performance issue if not managed.',
+      'Not good for high-frequency or fine-grained state — external libraries with selectors scale better.',
+      'Makes component dependencies implicit — you cannot tell from props alone what data a component needs.',
+      'Overuse leads to "hidden globals" that are hard to trace as apps grow.'
     ]
   },
 
@@ -150,48 +150,48 @@ function CheckoutButton() {
     items: [
       {
         title: 'Passing a new object literal directly as the context value',
-        wrong: `<CartContext.Provider value={{ cart, dispatch }}> // ❌ new object on every render → every consumer re-renders`,
+        wrong: `<CartContext.Provider value={{ cart, dispatch }}> // ❌ new object on every render → all consumers re-render`,
         right: `const value = useMemo(() => ({ cart, dispatch }), [cart]);\n<CartContext.Provider value={value}> // ✅ stable reference unless cart changes`,
-        note: 'An inline object literal creates a new reference on every render. React compares context values by reference — a "new" object always looks like "changed", causing all consumers to re-render even when nothing meaningful changed.'
+        note: 'An inline object creates a new reference on every render. React compares context values by reference — a "new" object always looks changed, so all consumers re-render unnecessarily.'
       },
       {
-        title: 'One giant "AppContext" for everything',
-        wrong: `const AppContext = createContext(); // user, theme, cart, notifications, settings all in one`,
+        title: 'One giant context for everything',
+        wrong: `const AppContext = createContext(); // user, theme, cart, notifications all in one`,
         right: `// Split: AuthContext, ThemeContext, CartContext — consumers only re-render for what they use`,
-        note: 'A monolithic context means every change to ANY slice re-renders EVERY consumer. Splitting by concern is the single most impactful performance improvement for Context-heavy apps.'
+        note: 'A monolithic context means every change to any slice re-renders every consumer. Splitting by concern is the biggest performance improvement for Context-heavy apps.'
       },
       {
-        title: 'Missing the null check in custom hooks',
+        title: 'Missing the null check in custom Hooks',
         wrong: `export const useCart = () => useContext(CartContext); // returns null outside Provider — confusing errors later`,
         right: `export function useCart() {\n  const ctx = useContext(CartContext);\n  if (!ctx) throw new Error('useCart must be inside <CartProvider>');\n  return ctx;\n}`,
-        note: 'An early, explicit throw with a clear message points immediately to the missing Provider, rather than cryptically failing deep in the consuming component later.'
+        note: 'An early, clear error message points immediately to the missing Provider instead of failing mysteriously deep inside a consuming component.'
       }
     ]
   },
 
   bestPractices: [
-    'Wrap each context in a dedicated Provider component and a custom useX() hook — consumers never deal with createContext/useContext directly.',
-    'Memoize the context value object (useMemo) to prevent accidental mass re-renders from unstable value references.',
+    'Wrap each context in a dedicated Provider component and a custom useX() Hook — consumers never touch createContext/useContext directly.',
+    'Memoize the context value object (useMemo) to prevent accidental mass re-renders from new object references.',
     'Split by concern — one context per domain (auth, theme, cart) — never one mega context.',
-    'Provide a sensible defaultValue to createContext so components work in isolation (Storybook, unit tests) without a Provider.',
-    'For read-heavy contexts with fine-grained access, consider splitting into separate "data" and "dispatch" contexts — dispatch is stable, data may change more often.'
+    'Provide a sensible defaultValue so components work in isolation (Storybook, unit tests) without a Provider.',
+    'For large trees, split into separate data and dispatch contexts — dispatch is stable, data changes more often.'
   ],
 
   interviewQuestions: [
-    { q: 'What is the difference between passing a value directly as the context value vs. memoizing it?', a: 'An inline object literal ({user, dispatch}) creates a new reference on every render of the Provider component. React uses Object.is (reference equality) to determine whether a context value changed and consumers need to re-render — so a brand-new object every render looks like a change every time, causing all consumers to re-render unnecessarily. Wrapping it in useMemo(() => ({user, dispatch}), [user]) keeps the reference stable across renders where `user` hasn\'t actually changed.' },
-    { q: 'How would you combine useReducer with Context to build a global store?', a: 'Create a Provider component that calls useReducer to get [state, dispatch], memoizes { state, dispatch } as the context value, and wraps children in a Provider. Expose custom hooks (useAuth(), useCart()) that call useContext and throw if the context is null. This gives you typed, testable state transitions (the reducer), a stable dispatch reference, and any component in the tree can read state or dispatch actions with zero prop drilling.' },
-    { q: 'When is Context a poor fit for shared state, and what should you use instead?', a: 'When state changes very frequently (e.g. real-time position of a drag handle, every keystroke in a form field) AND is consumed by many components — every change triggers re-renders in every consumer. External state-management libraries (Redux, Zustand, Jotai) with selector support can deliver updates only to components that actually care about the changed slice. Context is ideal for slowly-changing, broadly-relevant ambient data (auth, theme, locale) — not for fine-grained, high-frequency shared state.' },
-    { q: 'What does createContext\'s defaultValue actually do, and when is it used?', a: 'It\'s the value returned by useContext when NO matching Provider exists above the component in the tree. It\'s NOT the initial value that Providers start with — each Provider manages its own value independently. The default is useful for components rendered in isolation (unit tests, Storybook stories) without a Provider wrapper, providing a predictable fallback rather than null/undefined.' },
-    { q: 'What is the "split context into data and dispatch" pattern, and why does it help performance?', a: 'Because dispatch (from useReducer) has a stable identity across renders, while state changes on every update. If you put them in the same context, every state change re-renders ALL consumers — including ones that only dispatch and never read state. By splitting into a StateContext (for state readers) and a DispatchContext (for dispatch-only components), components that only dispatch actions never re-render when state changes, reducing unnecessary work significantly in large trees.' }
+    { q: 'What is the difference between passing a value directly vs. memoizing it?', a: 'An inline object ({user, dispatch}) creates a new reference on every render of the Provider. React uses reference equality to detect context changes — a new object every render looks like a change every time, causing all consumers to re-render unnecessarily. useMemo(() => ({user, dispatch}), [user]) keeps the reference stable across renders where user has not changed.' },
+    { q: 'How would you combine useReducer with Context to build a global store?', a: 'Create a Provider component that calls useReducer to get [state, dispatch], memoizes {state, dispatch} as the context value, and wraps children in a Provider. Expose custom Hooks (useAuth(), useCart()) that call useContext and throw if null. This gives typed, testable state transitions, a stable dispatch reference, and any component can read state or dispatch actions with no prop drilling.' },
+    { q: 'When is Context a poor fit for shared state?', a: 'When state changes very frequently AND is consumed by many components — every change re-renders every consumer. External libraries like Redux or Zustand with selector support deliver updates only to components that care about the changed slice. Context is ideal for slowly-changing ambient data (auth, theme, locale) — not for high-frequency, fine-grained shared state.' },
+    { q: 'What does createContext\'s defaultValue actually do?', a: 'It is the value returned by useContext when no matching Provider exists above the component. It is NOT the initial value that Providers start with — each Provider manages its own value independently. The default is useful for components rendered in isolation (unit tests, Storybook) without a Provider wrapper.' },
+    { q: 'What is the "split context into data and dispatch" pattern?', a: 'dispatch from useReducer has a stable identity across renders, while state changes on every update. If they are in the same context, every state change re-renders ALL consumers — including ones that only dispatch and never read state. Splitting into a StateContext (for readers) and a DispatchContext (for dispatch-only components) means dispatch-only consumers never re-render on state changes.' }
   ],
 
   summary: {
-    description: 'The Context API is the clean, dependency-free solution for broadcasting ambient, cross-cutting data (auth, theme, locale) through a React tree. Its power comes from focused, well-memoized providers composed together, paired with thin custom hooks for clean consumption — and its limitations (all-or-nothing re-renders) are managed through split contexts and stable value references rather than fighting the API.'
+    description: 'The Context API is React\'s built-in solution for sharing ambient, cross-cutting data (auth, theme, locale) without prop drilling. Use focused Providers, memoize the value, split contexts by concern, and expose everything through custom Hooks. Manage re-renders by keeping context changes infrequent and the value reference stable.'
   },
 
   furtherReading: [
-    { label: 'Official docs', note: 'react.dev/learn/passing-data-deeply-with-context and react.dev/reference/react/createContext — the canonical references for the full Context API surface.' },
-    { label: 'Related topic', note: 'See "useContext" for the consumption-side basics, "useReducer" for the store-building pattern, and "State Management" for when to graduate to an external library.' }
+    { label: 'Official docs', note: 'react.dev/learn/passing-data-deeply-with-context and react.dev/reference/react/createContext — canonical references for the full Context API.' },
+    { label: 'Related topic', note: 'See "useContext" for the basics, "useReducer" for the store-building pattern, and "State Management" for when to use an external library.' }
   ]
 };
 
