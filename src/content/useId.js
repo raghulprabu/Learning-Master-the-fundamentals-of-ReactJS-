@@ -82,6 +82,7 @@ const useIdContent = {
 <FormField label="Username" hint="Letters and numbers only" />
 <FormField label="Bio" hint="Max 160 characters" />` },
     points: [
+      // eslint-disable-next-line no-template-curly-in-string
       'Derive multiple related IDs from one useId() call by appending suffixes: `${id}-hint`, `${id}-error`.',
       'Calling useId multiple times in the same component returns a different ID each time.',
       'React supports an `identifierPrefix` option on root APIs for app-wide ID prefixing.'
@@ -171,6 +172,7 @@ function FormField() {
 
   bestPractices: [
     'Reserve useId strictly for accessibility attribute linkage — never for list keys.',
+    // eslint-disable-next-line no-template-curly-in-string
     'Call it once per logical group and derive additional IDs by suffixing: `${id}-hint`, `${id}-error`.',
     'Bake it into reusable component internals so consumers never think about IDs.',
     'Treat the returned string as opaque — never parse it or make assumptions about its format.',
@@ -180,6 +182,7 @@ function FormField() {
   interviewQuestions: [
     { q: 'What problem does useId solve, and why can\'t you just use a counter or Math.random()?', a: 'It generates unique, stable IDs for accessibility attributes — guaranteed to match between server-rendered HTML and client hydration. A counter or Math.random() can produce DIFFERENT values on the server vs. the client, causing hydration-mismatch warnings and broken aria-* linkage. useId derives its value from the component\'s tree position, which is identical on both sides.' },
     { q: 'Why should useId not be used to generate list keys?', a: 'Hooks cannot be called inside loops, so using useId per list item is invalid. Also, list keys need to be stable identifiers tied to the DATA so React can track each item across reorders — useId generates an identifier tied to tree position, which is a completely different kind of stability.' },
+    // eslint-disable-next-line no-template-curly-in-string
     { q: 'How do you use useId to connect a label, input, and hint accessibly?', a: 'Call useId() once to get a base id, then derive related IDs by suffixing: const hintId = `${id}-hint`. Use id for both <label htmlFor={id}> and <input id={id}>, and hintId for the hint <p id={hintId}> and the input\'s aria-describedby={hintId}. All related elements stay correctly linked even if the component is rendered many times.' },
     { q: 'Why is useId considered safe for server-side rendering while a simple counter is not?', a: 'useId derives its output from the component\'s position in the React tree — identical whether rendered on the server or hydrated on the client. A plain counter depends on runtime execution order, which can differ between the server and client render passes, producing different numbers and a hydration mismatch.' },
     { q: 'Should you treat the string returned by useId as meaningful?', a: 'No — treat it as a completely opaque, unique string. Its exact format is an internal implementation detail that can change between React versions. The only guarantees are uniqueness within the tree and stability between server and client renders.' }
